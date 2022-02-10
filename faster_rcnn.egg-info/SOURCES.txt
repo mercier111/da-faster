@@ -1,0 +1,12 @@
+/home/pya2120210119/da-faster/DA_Faster_ICR_CCR/lib/model/csrc/vision.cpp
+/home/pya2120210119/da-faster/DA_Faster_ICR_CCR/lib/model/csrc/cpu/ROIAlign_cpu.cpp
+/home/pya2120210119/da-faster/DA_Faster_ICR_CCR/lib/model/csrc/cpu/nms_cpu.cpp
+/home/pya2120210119/da-faster/DA_Faster_ICR_CCR/lib/model/csrc/cuda/ROIAlign_cuda.cu
+/home/pya2120210119/da-faster/DA_Faster_ICR_CCR/lib/model/csrc/cuda/ROIPool_cuda.cu
+/home/pya2120210119/da-faster/DA_Faster_ICR_CCR/lib/model/csrc/cuda/nms.cu
+eval/__init__.py
+eval/test.py
+faster_rcnn.egg-info/PKG-INFO
+faster_rcnn.egg-info/SOURCES.txt
+faster_rcnn.egg-info/dependency_links.txt
+faster_rcnn.egg-info/top_level.txt

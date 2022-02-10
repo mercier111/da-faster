@@ -1,0 +1,930 @@
+Called with args:
+Namespace(batch_size=1, bayes=False, checkpoint_interval=1, class_agnostic=False, cuda=True, dataset='LEVIR', disp_interval=100, instance_weight_value=1.0, lamda=0.1, large_scale=False, lr=0.001, lr_decay_gamma=0.1, lr_decay_step=10, max_epochs=30, max_iter=2000, model_name='', net='res101', num_workers=0, optimizer='sgd', pretrained_path='', resume=False, save_dir='experiments/DA_Faster/LEVIR/model', session=1, start_epoch=1)
+loading our dataset...........
+Using config:
+{'ANCHOR_RATIOS': [0.5, 1, 2],
+ 'ANCHOR_SCALES': [8, 16, 32],
+ 'CROP_RESIZE_WITH_MAX_POOL': False,
+ 'CUDA': False,
+ 'DATA_DIR': '/home/pya/da-faster/data',
+ 'DEDUP_BOXES': 0.0625,
+ 'EPS': 1e-14,
+ 'EXP_DIR': 'res101',
+ 'FEAT_STRIDE': [16],
+ 'GPU_ID': 0,
+ 'MATLAB': 'matlab',
+ 'MAX_NUM_GT_BOXES': 30,
+ 'MOBILENET': {'DEPTH_MULTIPLIER': 1.0,
+               'FIXED_LAYERS': 5,
+               'REGU_DEPTH': False,
+               'WEIGHT_DECAY': 4e-05},
+ 'PIXEL_MEANS': array([[[0, 0, 0]]]),
+ 'POOLING_MODE': 'align',
+ 'POOLING_SIZE': 7,
+ 'RESNET': {'FIXED_BLOCKS': 1, 'MAX_POOL': False},
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': '/home/pya/da-faster',
+ 'TEST': {'BBOX_REG': True,
+          'HAS_RPN': True,
+          'MAX_SIZE': 1000,
+          'MODE': 'nms',
+          'NMS': 0.3,
+          'PROPOSAL_METHOD': 'gt',
+          'RPN_MIN_SIZE': 16,
+          'RPN_NMS_THRESH': 0.7,
+          'RPN_POST_NMS_TOP_N': 300,
+          'RPN_PRE_NMS_TOP_N': 6000,
+          'RPN_TOP_N': 5000,
+          'SCALES': [400],
+          'SVM': False},
+ 'TRAIN': {'ASPECT_GROUPING': False,
+           'BATCH_SIZE': 128,
+           'BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'BBOX_NORMALIZE_MEANS': [0.0, 0.0, 0.0, 0.0],
+           'BBOX_NORMALIZE_STDS': [0.1, 0.1, 0.2, 0.2],
+           'BBOX_NORMALIZE_TARGETS': True,
+           'BBOX_NORMALIZE_TARGETS_PRECOMPUTED': True,
+           'BBOX_REG': True,
+           'BBOX_THRESH': 0.5,
+           'BG_THRESH_HI': 0.5,
+           'BG_THRESH_LO': 0.0,
+           'BIAS_DECAY': False,
+           'BN_TRAIN': False,
+           'DISPLAY': 20,
+           'DOUBLE_BIAS': False,
+           'FG_FRACTION': 0.25,
+           'FG_THRESH': 0.5,
+           'GAMMA': 0.1,
+           'HAS_RPN': True,
+           'IMS_PER_BATCH': 1,
+           'LEARNING_RATE': 0.001,
+           'MAX_SIZE': 1200,
+           'MOMENTUM': 0.9,
+           'PROPOSAL_METHOD': 'gt',
+           'RPN_BATCHSIZE': 256,
+           'RPN_BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'RPN_CLOBBER_POSITIVES': False,
+           'RPN_FG_FRACTION': 0.5,
+           'RPN_MIN_SIZE': 8,
+           'RPN_NEGATIVE_OVERLAP': 0.3,
+           'RPN_NMS_THRESH': 0.7,
+           'RPN_POSITIVE_OVERLAP': 0.7,
+           'RPN_POSITIVE_WEIGHT': -1.0,
+           'RPN_POST_NMS_TOP_N': 2000,
+           'RPN_PRE_NMS_TOP_N': 12000,
+           'SCALES': [400, 600],
+           'SNAPSHOT_ITERS': 5000,
+           'SNAPSHOT_KEPT': 3,
+           'SNAPSHOT_PREFIX': 'res101_faster_rcnn',
+           'STEPSIZE': [30000],
+           'SUMMARY_INTERVAL': 180,
+           'TRIM_HEIGHT': 600,
+           'TRIM_WIDTH': 600,
+           'TRUNCATED': False,
+           'USE_ALL_GT': True,
+           'USE_FLIPPED': True,
+           'USE_GT': False,
+           'WEIGHT_DECAY': 0.0001},
+ 'USE_GPU_NMS': True}
+LEVIR_trainval
+Loaded dataset `LEVIR_trainval` for training
+Set proposal method: gt
+Appending horizontally-flipped training examples...
+LEVIR_trainval gt roidb loaded from /home/pya/da-faster/experiments/domain-adaptation/cache/LEVIR_trainval_gt_roidb.pkl
+done
+Preparing training data...
+done
+before filtering, there are 1610 images...
+after filtering, there are 1610 images...
+1610
+SSDD_train
+Loaded dataset `SSDD_train` for training
+Set proposal method: gt
+Appending horizontally-flipped training examples...
+SSDD_train gt roidb loaded from /home/pya/da-faster/experiments/domain-adaptation/cache/SSDD_train_gt_roidb.pkl
+done
+Preparing training data...
+done
+before filtering, there are 928 images...
+after filtering, there are 928 images...
+928
+source 1610 target 928 roidb entries
+/home/pya/miniconda3/envs/da-faster/lib/python3.7/site-packages/torch/nn/_reduction.py:42: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
+  warnings.warn(warning.format(ret))
+Loading pretrained weights from datasets/pretrained_model/resnet101.pth
+/home/pya/miniconda3/envs/da-faster/lib/python3.7/site-packages/torch/nn/functional.py:1806: UserWarning: nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+  warnings.warn("nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.")
+[session 1][epoch  1][iter    0/2000] loss: 13.7359, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 0.965082
+			category_cls: 0.3542, rpn_cls: 0.8329, rpn_box: 0.1122, rcnn_cls: 3.2472, rcnn_box 0.0627,
+			img_loss 0.0680,ins_loss 0.1149,cst_loss 1.1235
+[session 1][epoch  1][iter  100/2000] loss: 5.0072, lr: 1.00e-03
+			fg/bg=(4/124), time cost: 28.011315
+			category_cls: 0.4446, rpn_cls: 0.1014, rpn_box: 0.0126, rcnn_cls: 0.0172, rcnn_box 0.0975,
+			img_loss 0.0680,ins_loss 0.0675,cst_loss 0.0267
+[session 1][epoch  1][iter  200/2000] loss: 1.9461, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 27.172600
+			category_cls: 0.2874, rpn_cls: 0.0505, rpn_box: 0.0165, rcnn_cls: 0.5004, rcnn_box 0.4107,
+			img_loss 0.0585,ins_loss 0.0613,cst_loss 0.0772
+[session 1][epoch  1][iter  300/2000] loss: 1.9715, lr: 1.00e-03
+			fg/bg=(3/125), time cost: 28.046905
+			category_cls: 0.5648, rpn_cls: 0.0853, rpn_box: 0.0109, rcnn_cls: 0.0700, rcnn_box 0.0690,
+			img_loss 0.0691,ins_loss 0.0702,cst_loss 0.0388
+[session 1][epoch  1][iter  400/2000] loss: 1.6448, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 27.842437
+			category_cls: 0.4654, rpn_cls: 0.0160, rpn_box: 0.0042, rcnn_cls: 0.0893, rcnn_box 0.1278,
+			img_loss 0.0566,ins_loss 0.0684,cst_loss 0.0403
+[session 1][epoch  1][iter  500/2000] loss: 1.5236, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.172382
+			category_cls: 0.5096, rpn_cls: 0.6649, rpn_box: 0.2541, rcnn_cls: 0.0742, rcnn_box 0.1304,
+			img_loss 0.0744,ins_loss 0.0688,cst_loss 0.0923
+[session 1][epoch  1][iter  600/2000] loss: 1.4235, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.421842
+			category_cls: 0.6346, rpn_cls: 0.1508, rpn_box: 0.0355, rcnn_cls: 0.1297, rcnn_box 0.0178,
+			img_loss 0.0694,ins_loss 0.0705,cst_loss 0.0196
+[session 1][epoch  1][iter  700/2000] loss: 1.4517, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.004624
+			category_cls: 0.6606, rpn_cls: 0.0418, rpn_box: 0.0058, rcnn_cls: 0.0196, rcnn_box 0.0015,
+			img_loss 0.0752,ins_loss 0.0709,cst_loss 0.0177
+[session 1][epoch  1][iter  800/2000] loss: 1.4800, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.142728
+			category_cls: 0.5329, rpn_cls: 0.0543, rpn_box: 0.0049, rcnn_cls: 0.1052, rcnn_box 0.1044,
+			img_loss 0.0696,ins_loss 0.0684,cst_loss 0.0045
+[session 1][epoch  1][iter  900/2000] loss: 1.4010, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 27.497466
+			category_cls: 0.5509, rpn_cls: 0.0337, rpn_box: 0.0023, rcnn_cls: 0.1445, rcnn_box 0.1167,
+			img_loss 0.0696,ins_loss 0.0685,cst_loss 0.0223
+[session 1][epoch  1][iter 1000/2000] loss: 1.4134, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 27.863942
+			category_cls: 0.6372, rpn_cls: 0.2810, rpn_box: 0.0161, rcnn_cls: 0.2147, rcnn_box 0.3291,
+			img_loss 0.0787,ins_loss 0.0698,cst_loss 0.0896
+[session 1][epoch  1][iter 1100/2000] loss: 1.3250, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 27.744868
+			category_cls: 0.6096, rpn_cls: 0.0334, rpn_box: 0.0146, rcnn_cls: 0.1157, rcnn_box 0.1785,
+			img_loss 0.0702,ins_loss 0.0691,cst_loss 0.0111
+[session 1][epoch  1][iter 1200/2000] loss: 1.3571, lr: 1.00e-03
+			fg/bg=(29/99), time cost: 28.467146
+			category_cls: 0.5947, rpn_cls: 0.2189, rpn_box: 0.0655, rcnn_cls: 0.0862, rcnn_box 0.2903,
+			img_loss 0.0641,ins_loss 0.0693,cst_loss 0.0134
+[session 1][epoch  1][iter 1300/2000] loss: 1.3144, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 28.117593
+			category_cls: 0.5189, rpn_cls: 0.0384, rpn_box: 0.0025, rcnn_cls: 0.0331, rcnn_box 0.0646,
+			img_loss 0.0690,ins_loss 0.0691,cst_loss 0.0496
+[session 1][epoch  1][iter 1400/2000] loss: 1.3697, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.281878
+			category_cls: 0.5604, rpn_cls: 0.0245, rpn_box: 0.0093, rcnn_cls: 0.0101, rcnn_box 0.0015,
+			img_loss 0.0644,ins_loss 0.0693,cst_loss 0.0203
+[session 1][epoch  1][iter 1500/2000] loss: 1.3983, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 27.598800
+			category_cls: 0.5453, rpn_cls: 0.0082, rpn_box: 0.0004, rcnn_cls: 0.0453, rcnn_box 0.1113,
+			img_loss 0.0539,ins_loss 0.0680,cst_loss 0.0976
+[session 1][epoch  1][iter 1600/2000] loss: 1.3019, lr: 1.00e-03
+			fg/bg=(30/98), time cost: 27.964772
+			category_cls: 0.6072, rpn_cls: 0.0858, rpn_box: 0.0438, rcnn_cls: 0.0585, rcnn_box 0.2477,
+			img_loss 0.0663,ins_loss 0.0691,cst_loss 0.0308
+[session 1][epoch  1][iter 1700/2000] loss: 1.3753, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 28.456120
+			category_cls: 0.5943, rpn_cls: 0.0319, rpn_box: 0.0014, rcnn_cls: 0.0678, rcnn_box 0.1803,
+			img_loss 0.0658,ins_loss 0.0689,cst_loss 0.0022
+[session 1][epoch  1][iter 1800/2000] loss: 1.2790, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 27.747124
+			category_cls: 0.5609, rpn_cls: 0.0071, rpn_box: 0.0011, rcnn_cls: 0.0388, rcnn_box 0.1169,
+			img_loss 0.0678,ins_loss 0.0698,cst_loss 0.0039
+[session 1][epoch  1][iter 1900/2000] loss: 1.3131, lr: 1.00e-03
+			fg/bg=(7/121), time cost: 28.024399
+			category_cls: 0.7166, rpn_cls: 0.0886, rpn_box: 0.0933, rcnn_cls: 0.0709, rcnn_box 0.0312,
+			img_loss 0.0737,ins_loss 0.0694,cst_loss 0.1712
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_1.pth
+[session 1][epoch  2][iter    0/2000] loss: 1.5260, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 0.246045
+			category_cls: 0.6051, rpn_cls: 0.1181, rpn_box: 0.2038, rcnn_cls: 0.0839, rcnn_box 0.0141,
+			img_loss 0.0621,ins_loss 0.0692,cst_loss 0.0402
+[session 1][epoch  2][iter  100/2000] loss: 1.4146, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 28.292629
+			category_cls: 0.5971, rpn_cls: 0.0863, rpn_box: 0.1303, rcnn_cls: 0.1738, rcnn_box 0.2793,
+			img_loss 0.0675,ins_loss 0.0693,cst_loss 0.0076
+[session 1][epoch  2][iter  200/2000] loss: 1.4243, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 27.759927
+			category_cls: 0.5934, rpn_cls: 0.0526, rpn_box: 0.0286, rcnn_cls: 0.0374, rcnn_box 0.1014,
+			img_loss 0.0683,ins_loss 0.0697,cst_loss 0.0077
+[session 1][epoch  2][iter  300/2000] loss: 1.4080, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.170757
+			category_cls: 0.5883, rpn_cls: 0.0217, rpn_box: 0.0028, rcnn_cls: 0.0282, rcnn_box 0.0299,
+			img_loss 0.0684,ins_loss 0.0694,cst_loss 0.0199
+[session 1][epoch  2][iter  400/2000] loss: 1.3410, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 28.256669
+			category_cls: 0.5929, rpn_cls: 0.0423, rpn_box: 0.0022, rcnn_cls: 0.0206, rcnn_box 0.0456,
+			img_loss 0.0700,ins_loss 0.0685,cst_loss 0.0429
+[session 1][epoch  2][iter  500/2000] loss: 1.3626, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 27.911990
+			category_cls: 0.5895, rpn_cls: 0.0285, rpn_box: 0.0063, rcnn_cls: 0.0782, rcnn_box 0.1004,
+			img_loss 0.0705,ins_loss 0.0692,cst_loss 0.0095
+[session 1][epoch  2][iter  600/2000] loss: 1.2269, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 27.779762
+			category_cls: 0.5832, rpn_cls: 0.0475, rpn_box: 0.0077, rcnn_cls: 0.0709, rcnn_box 0.0605,
+			img_loss 0.0651,ins_loss 0.0687,cst_loss 0.0094
+[session 1][epoch  2][iter  700/2000] loss: 1.2465, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.837826
+			category_cls: 0.5298, rpn_cls: 0.0112, rpn_box: 0.0182, rcnn_cls: 0.0188, rcnn_box 0.0874,
+			img_loss 0.0662,ins_loss 0.0695,cst_loss 0.0066
+[session 1][epoch  2][iter  800/2000] loss: 1.2272, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.446425
+			category_cls: 0.6446, rpn_cls: 0.0251, rpn_box: 0.0026, rcnn_cls: 0.0360, rcnn_box 0.0729,
+			img_loss 0.0763,ins_loss 0.0695,cst_loss 0.0386
+[session 1][epoch  2][iter  900/2000] loss: 1.1523, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.454053
+			category_cls: 0.5893, rpn_cls: 0.0514, rpn_box: 0.0401, rcnn_cls: 0.0182, rcnn_box 0.0098,
+			img_loss 0.0713,ins_loss 0.0686,cst_loss 0.0127
+[session 1][epoch  2][iter 1000/2000] loss: 1.2937, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 29.004679
+			category_cls: 0.5540, rpn_cls: 0.0100, rpn_box: 0.0100, rcnn_cls: 0.0285, rcnn_box 0.0610,
+			img_loss 0.0592,ins_loss 0.0683,cst_loss 0.0168
+[session 1][epoch  2][iter 1100/2000] loss: 1.1812, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 28.089968
+			category_cls: 0.5779, rpn_cls: 0.0107, rpn_box: 0.0006, rcnn_cls: 0.0220, rcnn_box 0.0697,
+			img_loss 0.0631,ins_loss 0.0695,cst_loss 0.0041
+[session 1][epoch  2][iter 1200/2000] loss: 1.2081, lr: 1.00e-03
+			fg/bg=(18/110), time cost: 27.872242
+			category_cls: 0.5923, rpn_cls: 0.0223, rpn_box: 0.0054, rcnn_cls: 0.1493, rcnn_box 0.3116,
+			img_loss 0.0703,ins_loss 0.0689,cst_loss 0.0066
+[session 1][epoch  2][iter 1300/2000] loss: 1.1672, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.434478
+			category_cls: 0.6267, rpn_cls: 0.1078, rpn_box: 0.0828, rcnn_cls: 0.1176, rcnn_box 0.2615,
+			img_loss 0.0705,ins_loss 0.0693,cst_loss 0.0089
+[session 1][epoch  2][iter 1400/2000] loss: 1.1862, lr: 1.00e-03
+			fg/bg=(23/105), time cost: 28.252447
+			category_cls: 0.6206, rpn_cls: 0.0340, rpn_box: 0.0436, rcnn_cls: 0.0687, rcnn_box 0.2463,
+			img_loss 0.0745,ins_loss 0.0688,cst_loss 0.0331
+[session 1][epoch  2][iter 1500/2000] loss: 1.1835, lr: 1.00e-03
+			fg/bg=(19/109), time cost: 28.058201
+			category_cls: 0.5816, rpn_cls: 0.0374, rpn_box: 0.0021, rcnn_cls: 0.0656, rcnn_box 0.1584,
+			img_loss 0.0612,ins_loss 0.0691,cst_loss 0.0307
+[session 1][epoch  2][iter 1600/2000] loss: 1.2420, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 28.656278
+			category_cls: 0.5860, rpn_cls: 0.0424, rpn_box: 0.0637, rcnn_cls: 0.1068, rcnn_box 0.0985,
+			img_loss 0.0656,ins_loss 0.0692,cst_loss 0.0033
+[session 1][epoch  2][iter 1700/2000] loss: 1.0966, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.215584
+			category_cls: 0.5933, rpn_cls: 0.0066, rpn_box: 0.0070, rcnn_cls: 0.0306, rcnn_box 0.0735,
+			img_loss 0.0687,ins_loss 0.0700,cst_loss 0.0085
+[session 1][epoch  2][iter 1800/2000] loss: 1.1378, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.157105
+			category_cls: 0.5892, rpn_cls: 0.0561, rpn_box: 0.0226, rcnn_cls: 0.0580, rcnn_box 0.0437,
+			img_loss 0.0692,ins_loss 0.0693,cst_loss 0.0045
+[session 1][epoch  2][iter 1900/2000] loss: 1.1884, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 28.514899
+			category_cls: 0.5785, rpn_cls: 0.0771, rpn_box: 0.1969, rcnn_cls: 0.0105, rcnn_box 0.1040,
+			img_loss 0.0618,ins_loss 0.0696,cst_loss 0.0149
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_2.pth
+[session 1][epoch  3][iter    0/2000] loss: 1.1382, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 0.330637
+			category_cls: 0.6263, rpn_cls: 0.0281, rpn_box: 0.0123, rcnn_cls: 0.0466, rcnn_box 0.0664,
+			img_loss 0.0648,ins_loss 0.0702,cst_loss 0.0729
+[session 1][epoch  3][iter  100/2000] loss: 1.2422, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 28.736551
+			category_cls: 0.6009, rpn_cls: 0.0811, rpn_box: 0.0537, rcnn_cls: 0.1626, rcnn_box 0.3088,
+			img_loss 0.0744,ins_loss 0.0696,cst_loss 0.0243
+[session 1][epoch  3][iter  200/2000] loss: 1.2268, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.323369
+			category_cls: 0.5423, rpn_cls: 0.1375, rpn_box: 0.2136, rcnn_cls: 0.0770, rcnn_box 0.0067,
+			img_loss 0.0650,ins_loss 0.0695,cst_loss 0.0072
+[session 1][epoch  3][iter  300/2000] loss: 1.1909, lr: 1.00e-03
+			fg/bg=(30/98), time cost: 28.216230
+			category_cls: 0.6670, rpn_cls: 0.0422, rpn_box: 0.0137, rcnn_cls: 0.3891, rcnn_box 0.4016,
+			img_loss 0.0765,ins_loss 0.0693,cst_loss 0.0594
+[session 1][epoch  3][iter  400/2000] loss: 1.0783, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 28.249828
+			category_cls: 0.6134, rpn_cls: 0.0542, rpn_box: 0.0097, rcnn_cls: 0.1371, rcnn_box 0.1664,
+			img_loss 0.0678,ins_loss 0.0692,cst_loss 0.0044
+[session 1][epoch  3][iter  500/2000] loss: 1.1034, lr: 1.00e-03
+			fg/bg=(4/124), time cost: 28.189839
+			category_cls: 0.5732, rpn_cls: 0.0864, rpn_box: 0.1643, rcnn_cls: 0.0733, rcnn_box 0.0800,
+			img_loss 0.0652,ins_loss 0.0691,cst_loss 0.0140
+[session 1][epoch  3][iter  600/2000] loss: 1.1289, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.520571
+			category_cls: 0.5611, rpn_cls: 0.0060, rpn_box: 0.0099, rcnn_cls: 0.0231, rcnn_box 0.0811,
+			img_loss 0.0593,ins_loss 0.0693,cst_loss 0.0123
+[session 1][epoch  3][iter  700/2000] loss: 1.1784, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 28.274607
+			category_cls: 0.6090, rpn_cls: 0.0501, rpn_box: 0.0130, rcnn_cls: 0.0293, rcnn_box 0.1115,
+			img_loss 0.0765,ins_loss 0.0688,cst_loss 0.0470
+[session 1][epoch  3][iter  800/2000] loss: 1.0958, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.392190
+			category_cls: 0.5791, rpn_cls: 0.0461, rpn_box: 0.0672, rcnn_cls: 0.0857, rcnn_box 0.1526,
+			img_loss 0.0674,ins_loss 0.0691,cst_loss 0.0038
+[session 1][epoch  3][iter  900/2000] loss: 1.1911, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 28.227806
+			category_cls: 0.5763, rpn_cls: 0.0094, rpn_box: 0.0014, rcnn_cls: 0.0310, rcnn_box 0.0205,
+			img_loss 0.0569,ins_loss 0.0721,cst_loss 0.0990
+[session 1][epoch  3][iter 1000/2000] loss: 1.0884, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 28.170733
+			category_cls: 0.5514, rpn_cls: 0.0846, rpn_box: 0.0812, rcnn_cls: 0.0851, rcnn_box 0.1511,
+			img_loss 0.0660,ins_loss 0.0691,cst_loss 0.0061
+[session 1][epoch  3][iter 1100/2000] loss: 1.0159, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.112806
+			category_cls: 0.5718, rpn_cls: 0.1979, rpn_box: 0.0368, rcnn_cls: 0.1706, rcnn_box 0.1468,
+			img_loss 0.0662,ins_loss 0.0687,cst_loss 0.0026
+[session 1][epoch  3][iter 1200/2000] loss: 1.2460, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.444632
+			category_cls: 0.5769, rpn_cls: 0.0069, rpn_box: 0.0045, rcnn_cls: 0.0048, rcnn_box 0.0650,
+			img_loss 0.0624,ins_loss 0.0695,cst_loss 0.0125
+[session 1][epoch  3][iter 1300/2000] loss: 1.1918, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.753140
+			category_cls: 0.6315, rpn_cls: 0.1202, rpn_box: 0.1070, rcnn_cls: 0.1179, rcnn_box 0.4606,
+			img_loss 0.0701,ins_loss 0.0689,cst_loss 0.0041
+[session 1][epoch  3][iter 1400/2000] loss: 1.1823, lr: 1.00e-03
+			fg/bg=(5/123), time cost: 28.156084
+			category_cls: 0.5739, rpn_cls: 0.0368, rpn_box: 0.0480, rcnn_cls: 0.0511, rcnn_box 0.0703,
+			img_loss 0.0709,ins_loss 0.0693,cst_loss 0.0024
+[session 1][epoch  3][iter 1500/2000] loss: 1.1180, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 27.869522
+			category_cls: 0.5533, rpn_cls: 0.0111, rpn_box: 0.0022, rcnn_cls: 0.0578, rcnn_box 0.0710,
+			img_loss 0.0641,ins_loss 0.0699,cst_loss 0.0092
+[session 1][epoch  3][iter 1600/2000] loss: 1.0288, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 28.269025
+			category_cls: 0.6171, rpn_cls: 0.1653, rpn_box: 0.0185, rcnn_cls: 0.0616, rcnn_box 0.0986,
+			img_loss 0.0702,ins_loss 0.0694,cst_loss 0.0040
+[session 1][epoch  3][iter 1700/2000] loss: 1.0089, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 27.921233
+			category_cls: 0.5844, rpn_cls: 0.0289, rpn_box: 0.1407, rcnn_cls: 0.0131, rcnn_box 0.0026,
+			img_loss 0.0658,ins_loss 0.0697,cst_loss 0.0031
+[session 1][epoch  3][iter 1800/2000] loss: 1.1222, lr: 1.00e-03
+			fg/bg=(7/121), time cost: 28.016656
+			category_cls: 0.5814, rpn_cls: 0.0251, rpn_box: 0.0407, rcnn_cls: 0.0569, rcnn_box 0.1209,
+			img_loss 0.0596,ins_loss 0.0709,cst_loss 0.0417
+[session 1][epoch  3][iter 1900/2000] loss: 1.0792, lr: 1.00e-03
+			fg/bg=(15/113), time cost: 27.959903
+			category_cls: 0.5781, rpn_cls: 0.0061, rpn_box: 0.0009, rcnn_cls: 0.0296, rcnn_box 0.0748,
+			img_loss 0.0671,ins_loss 0.0693,cst_loss 0.0015
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_3.pth
+[session 1][epoch  4][iter    0/2000] loss: 0.6375, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 0.292346
+			category_cls: 0.5778, rpn_cls: 0.0130, rpn_box: 0.0030, rcnn_cls: 0.0029, rcnn_box 0.0175,
+			img_loss 0.0643,ins_loss 0.0690,cst_loss 0.0077
+[session 1][epoch  4][iter  100/2000] loss: 1.0869, lr: 1.00e-03
+			fg/bg=(24/104), time cost: 28.479030
+			category_cls: 0.5779, rpn_cls: 0.0142, rpn_box: 0.0050, rcnn_cls: 0.0097, rcnn_box 0.0978,
+			img_loss 0.0679,ins_loss 0.0692,cst_loss 0.0038
+[session 1][epoch  4][iter  200/2000] loss: 1.1160, lr: 1.00e-03
+			fg/bg=(15/113), time cost: 28.481142
+			category_cls: 0.5766, rpn_cls: 0.0316, rpn_box: 0.0055, rcnn_cls: 0.0502, rcnn_box 0.0983,
+			img_loss 0.0696,ins_loss 0.0689,cst_loss 0.0028
+[session 1][epoch  4][iter  300/2000] loss: 1.0679, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 28.166997
+			category_cls: 0.6196, rpn_cls: 0.0022, rpn_box: 0.0002, rcnn_cls: 0.0139, rcnn_box 0.0807,
+			img_loss 0.0774,ins_loss 0.0695,cst_loss 0.0303
+[session 1][epoch  4][iter  400/2000] loss: 1.0515, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 28.407166
+			category_cls: 0.5775, rpn_cls: 0.0180, rpn_box: 0.0031, rcnn_cls: 0.0152, rcnn_box 0.0595,
+			img_loss 0.0580,ins_loss 0.0724,cst_loss 0.0905
+[session 1][epoch  4][iter  500/2000] loss: 1.0574, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 28.156792
+			category_cls: 0.6030, rpn_cls: 0.0660, rpn_box: 0.0038, rcnn_cls: 0.1748, rcnn_box 0.0980,
+			img_loss 0.0625,ins_loss 0.0712,cst_loss 0.0465
+[session 1][epoch  4][iter  600/2000] loss: 1.0280, lr: 1.00e-03
+			fg/bg=(3/125), time cost: 28.099403
+			category_cls: 0.5991, rpn_cls: 0.1352, rpn_box: 0.1886, rcnn_cls: 0.0472, rcnn_box 0.0234,
+			img_loss 0.0711,ins_loss 0.0692,cst_loss 0.0104
+[session 1][epoch  4][iter  700/2000] loss: 1.0090, lr: 1.00e-03
+			fg/bg=(2/126), time cost: 28.486139
+			category_cls: 0.5584, rpn_cls: 0.0077, rpn_box: 0.0078, rcnn_cls: 0.0050, rcnn_box 0.0177,
+			img_loss 0.0670,ins_loss 0.0694,cst_loss 0.0043
+[session 1][epoch  4][iter  800/2000] loss: 1.0744, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 29.098360
+			category_cls: 0.6167, rpn_cls: 0.0641, rpn_box: 0.0763, rcnn_cls: 0.0533, rcnn_box 0.2400,
+			img_loss 0.0667,ins_loss 0.0711,cst_loss 0.0586
+[session 1][epoch  4][iter  900/2000] loss: 1.0861, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 27.864863
+			category_cls: 0.6631, rpn_cls: 0.1103, rpn_box: 0.3469, rcnn_cls: 0.1456, rcnn_box 0.2347,
+			img_loss 0.0638,ins_loss 0.0712,cst_loss 0.0951
+[session 1][epoch  4][iter 1000/2000] loss: 1.0789, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.578539
+			category_cls: 0.5679, rpn_cls: 0.0048, rpn_box: 0.0008, rcnn_cls: 0.0169, rcnn_box 0.0382,
+			img_loss 0.0582,ins_loss 0.0718,cst_loss 0.0733
+[session 1][epoch  4][iter 1100/2000] loss: 1.0172, lr: 1.00e-03
+			fg/bg=(31/97), time cost: 28.154304
+			category_cls: 0.5478, rpn_cls: 0.0885, rpn_box: 0.0142, rcnn_cls: 0.0246, rcnn_box 0.3650,
+			img_loss 0.0678,ins_loss 0.0691,cst_loss 0.0148
+[session 1][epoch  4][iter 1200/2000] loss: 1.0438, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 28.177645
+			category_cls: 0.5579, rpn_cls: 0.0334, rpn_box: 0.0013, rcnn_cls: 0.0571, rcnn_box 0.0478,
+			img_loss 0.0655,ins_loss 0.0698,cst_loss 0.0046
+[session 1][epoch  4][iter 1300/2000] loss: 1.0720, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.257526
+			category_cls: 0.5627, rpn_cls: 0.0086, rpn_box: 0.0781, rcnn_cls: 0.0658, rcnn_box 0.2109,
+			img_loss 0.0682,ins_loss 0.0694,cst_loss 0.0053
+[session 1][epoch  4][iter 1400/2000] loss: 0.9814, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 28.474173
+			category_cls: 0.5981, rpn_cls: 0.0417, rpn_box: 0.0523, rcnn_cls: 0.0640, rcnn_box 0.1751,
+			img_loss 0.0691,ins_loss 0.0693,cst_loss 0.0014
+[session 1][epoch  4][iter 1500/2000] loss: 1.0874, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.191873
+			category_cls: 0.6539, rpn_cls: 0.0502, rpn_box: 0.0026, rcnn_cls: 0.0763, rcnn_box 0.0664,
+			img_loss 0.0821,ins_loss 0.0682,cst_loss 0.0801
+[session 1][epoch  4][iter 1600/2000] loss: 1.0836, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.150850
+			category_cls: 0.5545, rpn_cls: 0.0387, rpn_box: 0.0045, rcnn_cls: 0.0100, rcnn_box 0.0939,
+			img_loss 0.0647,ins_loss 0.0704,cst_loss 0.0050
+[session 1][epoch  4][iter 1700/2000] loss: 1.0355, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.447078
+			category_cls: 0.5431, rpn_cls: 0.0023, rpn_box: 0.0009, rcnn_cls: 0.0041, rcnn_box 0.0515,
+			img_loss 0.0678,ins_loss 0.0694,cst_loss 0.0120
+[session 1][epoch  4][iter 1800/2000] loss: 1.1210, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.509570
+			category_cls: 0.6107, rpn_cls: 0.0620, rpn_box: 0.0265, rcnn_cls: 0.0814, rcnn_box 0.1089,
+			img_loss 0.0708,ins_loss 0.0687,cst_loss 0.0060
+[session 1][epoch  4][iter 1900/2000] loss: 0.9748, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.460491
+			category_cls: 0.6613, rpn_cls: 0.1290, rpn_box: 0.0403, rcnn_cls: 0.3284, rcnn_box 0.2633,
+			img_loss 0.0829,ins_loss 0.0675,cst_loss 0.1184
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_4.pth
+[session 1][epoch  5][iter    0/2000] loss: 0.9729, lr: 1.00e-03
+			fg/bg=(7/121), time cost: 0.347122
+			category_cls: 0.5529, rpn_cls: 0.0657, rpn_box: 0.0154, rcnn_cls: 0.0123, rcnn_box 0.0775,
+			img_loss 0.0702,ins_loss 0.0689,cst_loss 0.0187
+[session 1][epoch  5][iter  100/2000] loss: 1.0583, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.692376
+			category_cls: 0.6262, rpn_cls: 0.0050, rpn_box: 0.0021, rcnn_cls: 0.0249, rcnn_box 0.1134,
+			img_loss 0.0741,ins_loss 0.0693,cst_loss 0.0130
+[session 1][epoch  5][iter  200/2000] loss: 1.0531, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 27.915312
+			category_cls: 0.5649, rpn_cls: 0.0022, rpn_box: 0.0021, rcnn_cls: 0.0034, rcnn_box 0.0183,
+			img_loss 0.0653,ins_loss 0.0685,cst_loss 0.0052
+[session 1][epoch  5][iter  300/2000] loss: 1.0953, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.417552
+			category_cls: 0.5704, rpn_cls: 0.0038, rpn_box: 0.0013, rcnn_cls: 0.0482, rcnn_box 0.0544,
+			img_loss 0.0695,ins_loss 0.0703,cst_loss 0.0059
+[session 1][epoch  5][iter  400/2000] loss: 1.0582, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 27.979623
+			category_cls: 0.5750, rpn_cls: 0.0282, rpn_box: 0.0039, rcnn_cls: 0.0056, rcnn_box 0.0866,
+			img_loss 0.0681,ins_loss 0.0687,cst_loss 0.0028
+[session 1][epoch  5][iter  500/2000] loss: 1.0231, lr: 1.00e-03
+			fg/bg=(2/126), time cost: 29.042260
+			category_cls: 0.5633, rpn_cls: 0.0329, rpn_box: 0.0271, rcnn_cls: 0.0241, rcnn_box 0.0446,
+			img_loss 0.0698,ins_loss 0.0690,cst_loss 0.0047
+[session 1][epoch  5][iter  600/2000] loss: 0.9862, lr: 1.00e-03
+			fg/bg=(15/113), time cost: 28.682735
+			category_cls: 0.5681, rpn_cls: 0.0165, rpn_box: 0.0149, rcnn_cls: 0.0475, rcnn_box 0.2311,
+			img_loss 0.0698,ins_loss 0.0688,cst_loss 0.0079
+[session 1][epoch  5][iter  700/2000] loss: 0.9357, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 28.308563
+			category_cls: 0.5423, rpn_cls: 0.0085, rpn_box: 0.0012, rcnn_cls: 0.0175, rcnn_box 0.0233,
+			img_loss 0.0704,ins_loss 0.0686,cst_loss 0.0172
+[session 1][epoch  5][iter  800/2000] loss: 1.0679, lr: 1.00e-03
+			fg/bg=(18/110), time cost: 28.534373
+			category_cls: 0.5432, rpn_cls: 0.0268, rpn_box: 0.0034, rcnn_cls: 0.0130, rcnn_box 0.0437,
+			img_loss 0.0677,ins_loss 0.0694,cst_loss 0.0013
+[session 1][epoch  5][iter  900/2000] loss: 1.1089, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.284813
+			category_cls: 0.6760, rpn_cls: 0.1515, rpn_box: 0.3578, rcnn_cls: 0.1803, rcnn_box 0.2563,
+			img_loss 0.0800,ins_loss 0.0687,cst_loss 0.1469
+[session 1][epoch  5][iter 1000/2000] loss: 0.9931, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 27.932022
+			category_cls: 0.5983, rpn_cls: 0.0072, rpn_box: 0.0009, rcnn_cls: 0.0635, rcnn_box 0.0196,
+			img_loss 0.0698,ins_loss 0.0695,cst_loss 0.0068
+[session 1][epoch  5][iter 1100/2000] loss: 1.0274, lr: 1.00e-03
+			fg/bg=(29/99), time cost: 28.547845
+			category_cls: 0.5876, rpn_cls: 0.0062, rpn_box: 0.0009, rcnn_cls: 0.0526, rcnn_box 0.1161,
+			img_loss 0.0693,ins_loss 0.0688,cst_loss 0.0173
+[session 1][epoch  5][iter 1200/2000] loss: 1.0163, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 28.419154
+			category_cls: 0.5833, rpn_cls: 0.0414, rpn_box: 0.0241, rcnn_cls: 0.0215, rcnn_box 0.0904,
+			img_loss 0.0653,ins_loss 0.0700,cst_loss 0.0096
+[session 1][epoch  5][iter 1300/2000] loss: 1.0541, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 28.449515
+			category_cls: 0.5691, rpn_cls: 0.0135, rpn_box: 0.0180, rcnn_cls: 0.0115, rcnn_box 0.0341,
+			img_loss 0.0688,ins_loss 0.0688,cst_loss 0.0038
+[session 1][epoch  5][iter 1400/2000] loss: 1.0434, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.023150
+			category_cls: 0.5826, rpn_cls: 0.0240, rpn_box: 0.0138, rcnn_cls: 0.0101, rcnn_box 0.0330,
+			img_loss 0.0637,ins_loss 0.0696,cst_loss 0.0096
+[session 1][epoch  5][iter 1500/2000] loss: 0.9994, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 27.831727
+			category_cls: 0.6352, rpn_cls: 0.1031, rpn_box: 0.2319, rcnn_cls: 0.1024, rcnn_box 0.2794,
+			img_loss 0.0724,ins_loss 0.0690,cst_loss 0.0182
+[session 1][epoch  5][iter 1600/2000] loss: 1.0119, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 27.833123
+			category_cls: 0.5844, rpn_cls: 0.0113, rpn_box: 0.0004, rcnn_cls: 0.0049, rcnn_box 0.0147,
+			img_loss 0.0647,ins_loss 0.0715,cst_loss 0.0039
+[session 1][epoch  5][iter 1700/2000] loss: 1.0014, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.916067
+			category_cls: 0.5902, rpn_cls: 0.0156, rpn_box: 0.0042, rcnn_cls: 0.0145, rcnn_box 0.0208,
+			img_loss 0.0677,ins_loss 0.0700,cst_loss 0.0188
+[session 1][epoch  5][iter 1800/2000] loss: 0.9956, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 28.010248
+			category_cls: 0.5404, rpn_cls: 0.0008, rpn_box: 0.0008, rcnn_cls: 0.0264, rcnn_box 0.0550,
+			img_loss 0.0643,ins_loss 0.0690,cst_loss 0.0155
+[session 1][epoch  5][iter 1900/2000] loss: 1.0641, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 28.100339
+			category_cls: 0.5372, rpn_cls: 0.0009, rpn_box: 0.0004, rcnn_cls: 0.0221, rcnn_box 0.0168,
+			img_loss 0.0680,ins_loss 0.0690,cst_loss 0.0038
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_5.pth
+[session 1][epoch  6][iter    0/2000] loss: 0.7536, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 0.246330
+			category_cls: 0.6268, rpn_cls: 0.0211, rpn_box: 0.0043, rcnn_cls: 0.0160, rcnn_box 0.0289,
+			img_loss 0.0734,ins_loss 0.0693,cst_loss 0.0105
+[session 1][epoch  6][iter  100/2000] loss: 0.9889, lr: 1.00e-03
+			fg/bg=(5/123), time cost: 28.478495
+			category_cls: 0.6323, rpn_cls: 0.0572, rpn_box: 0.0023, rcnn_cls: 0.0607, rcnn_box 0.0241,
+			img_loss 0.0696,ins_loss 0.0701,cst_loss 0.0136
+[session 1][epoch  6][iter  200/2000] loss: 0.9421, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.090480
+			category_cls: 0.6160, rpn_cls: 0.0373, rpn_box: 0.0333, rcnn_cls: 0.0415, rcnn_box 0.1123,
+			img_loss 0.0598,ins_loss 0.0709,cst_loss 0.0565
+[session 1][epoch  6][iter  300/2000] loss: 0.9656, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 27.731429
+			category_cls: 0.5900, rpn_cls: 0.0029, rpn_box: 0.0016, rcnn_cls: 0.0061, rcnn_box 0.0316,
+			img_loss 0.0563,ins_loss 0.0720,cst_loss 0.1167
+[session 1][epoch  6][iter  400/2000] loss: 1.0004, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.617300
+			category_cls: 0.5809, rpn_cls: 0.0183, rpn_box: 0.0002, rcnn_cls: 0.0073, rcnn_box 0.0298,
+			img_loss 0.0692,ins_loss 0.0683,cst_loss 0.0124
+[session 1][epoch  6][iter  500/2000] loss: 1.0440, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.441736
+			category_cls: 0.5588, rpn_cls: 0.0008, rpn_box: 0.0021, rcnn_cls: 0.0066, rcnn_box 0.0269,
+			img_loss 0.0681,ins_loss 0.0686,cst_loss 0.0017
+[session 1][epoch  6][iter  600/2000] loss: 0.9970, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.655771
+			category_cls: 0.5626, rpn_cls: 0.0098, rpn_box: 0.0012, rcnn_cls: 0.0065, rcnn_box 0.0263,
+			img_loss 0.0663,ins_loss 0.0695,cst_loss 0.0031
+[session 1][epoch  6][iter  700/2000] loss: 1.0119, lr: 1.00e-03
+			fg/bg=(5/123), time cost: 27.820072
+			category_cls: 0.5839, rpn_cls: 0.0480, rpn_box: 0.0871, rcnn_cls: 0.0332, rcnn_box 0.0985,
+			img_loss 0.0627,ins_loss 0.0698,cst_loss 0.0093
+[session 1][epoch  6][iter  800/2000] loss: 0.9511, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.838969
+			category_cls: 0.5869, rpn_cls: 0.3354, rpn_box: 0.1786, rcnn_cls: 0.0359, rcnn_box 0.0047,
+			img_loss 0.0712,ins_loss 0.0688,cst_loss 0.0034
+[session 1][epoch  6][iter  900/2000] loss: 0.9606, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.668030
+			category_cls: 0.5602, rpn_cls: 0.0001, rpn_box: 0.0005, rcnn_cls: 0.0129, rcnn_box 0.0110,
+			img_loss 0.0625,ins_loss 0.0705,cst_loss 0.0195
+[session 1][epoch  6][iter 1000/2000] loss: 1.0967, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.504758
+			category_cls: 0.5755, rpn_cls: 0.0639, rpn_box: 0.0085, rcnn_cls: 0.0428, rcnn_box 0.1751,
+			img_loss 0.0546,ins_loss 0.0740,cst_loss 0.0388
+[session 1][epoch  6][iter 1100/2000] loss: 0.9537, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 28.231739
+			category_cls: 0.5521, rpn_cls: 0.0140, rpn_box: 0.0053, rcnn_cls: 0.0197, rcnn_box 0.0304,
+			img_loss 0.0655,ins_loss 0.0687,cst_loss 0.0036
+[session 1][epoch  6][iter 1200/2000] loss: 1.0015, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 28.337178
+			category_cls: 0.5570, rpn_cls: 0.0025, rpn_box: 0.0036, rcnn_cls: 0.0513, rcnn_box 0.0896,
+			img_loss 0.0691,ins_loss 0.0692,cst_loss 0.0009
+[session 1][epoch  6][iter 1300/2000] loss: 1.0439, lr: 1.00e-03
+			fg/bg=(26/102), time cost: 28.397994
+			category_cls: 0.5604, rpn_cls: 0.0641, rpn_box: 0.0203, rcnn_cls: 0.0320, rcnn_box 0.0167,
+			img_loss 0.0678,ins_loss 0.0683,cst_loss 0.0022
+[session 1][epoch  6][iter 1400/2000] loss: 0.9975, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 27.903954
+			category_cls: 0.5474, rpn_cls: 0.0061, rpn_box: 0.0010, rcnn_cls: 0.0054, rcnn_box 0.0334,
+			img_loss 0.0682,ins_loss 0.0690,cst_loss 0.0121
+[session 1][epoch  6][iter 1500/2000] loss: 1.0339, lr: 1.00e-03
+			fg/bg=(27/101), time cost: 28.291692
+			category_cls: 0.6265, rpn_cls: 0.0438, rpn_box: 0.0280, rcnn_cls: 0.0271, rcnn_box 0.0879,
+			img_loss 0.0618,ins_loss 0.0693,cst_loss 0.0435
+[session 1][epoch  6][iter 1600/2000] loss: 1.0146, lr: 1.00e-03
+			fg/bg=(27/101), time cost: 28.396480
+			category_cls: 0.6183, rpn_cls: 0.0366, rpn_box: 0.1208, rcnn_cls: 0.0863, rcnn_box 0.1863,
+			img_loss 0.0674,ins_loss 0.0701,cst_loss 0.0084
+[session 1][epoch  6][iter 1700/2000] loss: 0.9526, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.785000
+			category_cls: 0.5503, rpn_cls: 0.0105, rpn_box: 0.0016, rcnn_cls: 0.0177, rcnn_box 0.0672,
+			img_loss 0.0701,ins_loss 0.0696,cst_loss 0.0112
+[session 1][epoch  6][iter 1800/2000] loss: 1.0156, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.727240
+			category_cls: 0.5533, rpn_cls: 0.0136, rpn_box: 0.0289, rcnn_cls: 0.0060, rcnn_box 0.1286,
+			img_loss 0.0648,ins_loss 0.0702,cst_loss 0.0073
+[session 1][epoch  6][iter 1900/2000] loss: 1.1171, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.071569
+			category_cls: 0.5875, rpn_cls: 0.0729, rpn_box: 0.0573, rcnn_cls: 0.0850, rcnn_box 0.2404,
+			img_loss 0.0606,ins_loss 0.0708,cst_loss 0.0274
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_6.pth
+[session 1][epoch  7][iter    0/2000] loss: 0.7426, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 0.285503
+			category_cls: 0.5585, rpn_cls: 0.0068, rpn_box: 0.0020, rcnn_cls: 0.0122, rcnn_box 0.0637,
+			img_loss 0.0681,ins_loss 0.0690,cst_loss 0.0063
+[session 1][epoch  7][iter  100/2000] loss: 0.9885, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.523741
+			category_cls: 0.5858, rpn_cls: 0.0243, rpn_box: 0.0005, rcnn_cls: 0.0415, rcnn_box 0.0169,
+			img_loss 0.0702,ins_loss 0.0695,cst_loss 0.0042
+[session 1][epoch  7][iter  200/2000] loss: 1.0278, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.305050
+			category_cls: 0.5689, rpn_cls: 0.0024, rpn_box: 0.0002, rcnn_cls: 0.0402, rcnn_box 0.0286,
+			img_loss 0.0690,ins_loss 0.0685,cst_loss 0.0065
+[session 1][epoch  7][iter  300/2000] loss: 0.9649, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.080765
+			category_cls: 0.5642, rpn_cls: 0.0026, rpn_box: 0.0024, rcnn_cls: 0.0125, rcnn_box 0.0370,
+			img_loss 0.0628,ins_loss 0.0698,cst_loss 0.0138
+[session 1][epoch  7][iter  400/2000] loss: 1.0148, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.283550
+			category_cls: 0.5739, rpn_cls: 0.0083, rpn_box: 0.0041, rcnn_cls: 0.0137, rcnn_box 0.1157,
+			img_loss 0.0537,ins_loss 0.0715,cst_loss 0.1920
+[session 1][epoch  7][iter  500/2000] loss: 0.9707, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.573212
+			category_cls: 0.5753, rpn_cls: 0.0004, rpn_box: 0.0000, rcnn_cls: 0.0239, rcnn_box 0.0379,
+			img_loss 0.0634,ins_loss 0.0709,cst_loss 0.0048
+[session 1][epoch  7][iter  600/2000] loss: 1.1151, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 28.481143
+			category_cls: 0.5671, rpn_cls: 0.0115, rpn_box: 0.0045, rcnn_cls: 0.0024, rcnn_box 0.0284,
+			img_loss 0.0699,ins_loss 0.0684,cst_loss 0.0128
+[session 1][epoch  7][iter  700/2000] loss: 0.9990, lr: 1.00e-03
+			fg/bg=(25/103), time cost: 27.956112
+			category_cls: 0.5915, rpn_cls: 0.0202, rpn_box: 0.0034, rcnn_cls: 0.0147, rcnn_box 0.0321,
+			img_loss 0.0693,ins_loss 0.0687,cst_loss 0.0018
+[session 1][epoch  7][iter  800/2000] loss: 1.0135, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.618541
+			category_cls: 0.6344, rpn_cls: 0.0205, rpn_box: 0.0016, rcnn_cls: 0.0524, rcnn_box 0.1577,
+			img_loss 0.0838,ins_loss 0.0691,cst_loss 0.2129
+[session 1][epoch  7][iter  900/2000] loss: 1.0440, lr: 1.00e-03
+			fg/bg=(29/99), time cost: 28.365461
+			category_cls: 0.5698, rpn_cls: 0.0348, rpn_box: 0.0690, rcnn_cls: 0.1531, rcnn_box 0.2871,
+			img_loss 0.0648,ins_loss 0.0696,cst_loss 0.0151
+[session 1][epoch  7][iter 1000/2000] loss: 0.9671, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 28.302407
+			category_cls: 0.5577, rpn_cls: 0.0411, rpn_box: 0.0042, rcnn_cls: 0.0878, rcnn_box 0.1235,
+			img_loss 0.0695,ins_loss 0.0691,cst_loss 0.0308
+[session 1][epoch  7][iter 1100/2000] loss: 0.9700, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.284655
+			category_cls: 0.6032, rpn_cls: 0.0063, rpn_box: 0.0008, rcnn_cls: 0.0066, rcnn_box 0.0129,
+			img_loss 0.0724,ins_loss 0.0689,cst_loss 0.0062
+[session 1][epoch  7][iter 1200/2000] loss: 1.0250, lr: 1.00e-03
+			fg/bg=(26/102), time cost: 28.771084
+			category_cls: 0.6175, rpn_cls: 0.1235, rpn_box: 0.0704, rcnn_cls: 0.0979, rcnn_box 0.2366,
+			img_loss 0.0794,ins_loss 0.0676,cst_loss 0.0460
+[session 1][epoch  7][iter 1300/2000] loss: 1.0186, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 27.830536
+			category_cls: 0.5842, rpn_cls: 0.0078, rpn_box: 0.0076, rcnn_cls: 0.1251, rcnn_box 0.2002,
+			img_loss 0.0683,ins_loss 0.0690,cst_loss 0.0138
+[session 1][epoch  7][iter 1400/2000] loss: 0.9174, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 27.716111
+			category_cls: 0.5660, rpn_cls: 0.0102, rpn_box: 0.0106, rcnn_cls: 0.0092, rcnn_box 0.0898,
+			img_loss 0.0652,ins_loss 0.0690,cst_loss 0.0125
+[session 1][epoch  7][iter 1500/2000] loss: 1.0641, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 27.954512
+			category_cls: 0.6483, rpn_cls: 0.0363, rpn_box: 0.0045, rcnn_cls: 0.0236, rcnn_box 0.0789,
+			img_loss 0.0703,ins_loss 0.0704,cst_loss 0.2858
+[session 1][epoch  7][iter 1600/2000] loss: 0.9553, lr: 1.00e-03
+			fg/bg=(18/110), time cost: 27.723403
+			category_cls: 0.5662, rpn_cls: 0.0085, rpn_box: 0.0022, rcnn_cls: 0.0030, rcnn_box 0.0228,
+			img_loss 0.0693,ins_loss 0.0687,cst_loss 0.0385
+[session 1][epoch  7][iter 1700/2000] loss: 0.9494, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.775004
+			category_cls: 0.5921, rpn_cls: 0.0082, rpn_box: 0.0137, rcnn_cls: 0.0110, rcnn_box 0.1615,
+			img_loss 0.0674,ins_loss 0.0688,cst_loss 0.0040
+[session 1][epoch  7][iter 1800/2000] loss: 1.0359, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.242341
+			category_cls: 0.5832, rpn_cls: 0.0183, rpn_box: 0.0144, rcnn_cls: 0.0142, rcnn_box 0.0436,
+			img_loss 0.0714,ins_loss 0.0686,cst_loss 0.0025
+[session 1][epoch  7][iter 1900/2000] loss: 0.9377, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.518179
+			category_cls: 0.6272, rpn_cls: 0.1400, rpn_box: 0.2318, rcnn_cls: 0.1732, rcnn_box 0.2565,
+			img_loss 0.0787,ins_loss 0.0679,cst_loss 0.0370
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_7.pth
+[session 1][epoch  8][iter    0/2000] loss: 2.9686, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 0.301891
+			category_cls: 0.6777, rpn_cls: 0.2345, rpn_box: 0.2667, rcnn_cls: 0.0751, rcnn_box 0.2276,
+			img_loss 0.0904,ins_loss 0.0678,cst_loss 0.1820
+[session 1][epoch  8][iter  100/2000] loss: 0.9244, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.360102
+			category_cls: 0.5743, rpn_cls: 0.0048, rpn_box: 0.0016, rcnn_cls: 0.0099, rcnn_box 0.0423,
+			img_loss 0.0677,ins_loss 0.0686,cst_loss 0.0015
+[session 1][epoch  8][iter  200/2000] loss: 0.9828, lr: 1.00e-03
+			fg/bg=(29/99), time cost: 28.264021
+			category_cls: 0.6026, rpn_cls: 0.0652, rpn_box: 0.0555, rcnn_cls: 0.0990, rcnn_box 0.1747,
+			img_loss 0.0711,ins_loss 0.0693,cst_loss 0.0012
+[session 1][epoch  8][iter  300/2000] loss: 0.9612, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 27.597045
+			category_cls: 0.5923, rpn_cls: 0.0154, rpn_box: 0.0067, rcnn_cls: 0.0142, rcnn_box 0.0583,
+			img_loss 0.0565,ins_loss 0.0722,cst_loss 0.0746
+[session 1][epoch  8][iter  400/2000] loss: 0.9819, lr: 1.00e-03
+			fg/bg=(15/113), time cost: 28.131646
+			category_cls: 0.5737, rpn_cls: 0.0030, rpn_box: 0.0100, rcnn_cls: 0.0191, rcnn_box 0.1603,
+			img_loss 0.0707,ins_loss 0.0682,cst_loss 0.0056
+[session 1][epoch  8][iter  500/2000] loss: 0.9673, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 28.286914
+			category_cls: 0.5780, rpn_cls: 0.0006, rpn_box: 0.0006, rcnn_cls: 0.0142, rcnn_box 0.0712,
+			img_loss 0.0690,ins_loss 0.0688,cst_loss 0.0169
+[session 1][epoch  8][iter  600/2000] loss: 0.8735, lr: 1.00e-03
+			fg/bg=(20/108), time cost: 27.914737
+			category_cls: 0.5765, rpn_cls: 0.0094, rpn_box: 0.0023, rcnn_cls: 0.0081, rcnn_box 0.1059,
+			img_loss 0.0685,ins_loss 0.0684,cst_loss 0.0009
+[session 1][epoch  8][iter  700/2000] loss: 0.9553, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.276619
+			category_cls: 0.5904, rpn_cls: 0.0042, rpn_box: 0.0021, rcnn_cls: 0.0018, rcnn_box 0.0240,
+			img_loss 0.0663,ins_loss 0.0694,cst_loss 0.0022
+[session 1][epoch  8][iter  800/2000] loss: 1.0744, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 27.902758
+			category_cls: 0.5629, rpn_cls: 0.0047, rpn_box: 0.0013, rcnn_cls: 0.0344, rcnn_box 0.1124,
+			img_loss 0.0706,ins_loss 0.0688,cst_loss 0.0193
+[session 1][epoch  8][iter  900/2000] loss: 0.8974, lr: 1.00e-03
+			fg/bg=(24/104), time cost: 28.795746
+			category_cls: 0.5707, rpn_cls: 0.0008, rpn_box: 0.0022, rcnn_cls: 0.0620, rcnn_box 0.0408,
+			img_loss 0.0638,ins_loss 0.0705,cst_loss 0.0063
+[session 1][epoch  8][iter 1000/2000] loss: 0.9552, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 27.899187
+			category_cls: 0.5928, rpn_cls: 0.0566, rpn_box: 0.0016, rcnn_cls: 0.0086, rcnn_box 0.0620,
+			img_loss 0.0665,ins_loss 0.0691,cst_loss 0.0041
+[session 1][epoch  8][iter 1100/2000] loss: 0.8816, lr: 1.00e-03
+			fg/bg=(17/111), time cost: 28.680445
+			category_cls: 0.5557, rpn_cls: 0.0007, rpn_box: 0.0008, rcnn_cls: 0.0055, rcnn_box 0.0385,
+			img_loss 0.0696,ins_loss 0.0687,cst_loss 0.0064
+[session 1][epoch  8][iter 1200/2000] loss: 0.9275, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.488589
+			category_cls: 0.5569, rpn_cls: 0.0061, rpn_box: 0.0007, rcnn_cls: 0.0031, rcnn_box 0.0262,
+			img_loss 0.0567,ins_loss 0.0729,cst_loss 0.0513
+[session 1][epoch  8][iter 1300/2000] loss: 0.9104, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.319667
+			category_cls: 0.5906, rpn_cls: 0.0077, rpn_box: 0.0004, rcnn_cls: 0.0164, rcnn_box 0.0403,
+			img_loss 0.0699,ins_loss 0.0688,cst_loss 0.0025
+[session 1][epoch  8][iter 1400/2000] loss: 0.9019, lr: 1.00e-03
+			fg/bg=(22/106), time cost: 28.607044
+			category_cls: 0.5726, rpn_cls: 0.0033, rpn_box: 0.0034, rcnn_cls: 0.0276, rcnn_box 0.0808,
+			img_loss 0.0693,ins_loss 0.0682,cst_loss 0.0075
+[session 1][epoch  8][iter 1500/2000] loss: 0.9696, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.791349
+			category_cls: 0.5660, rpn_cls: 0.0037, rpn_box: 0.0193, rcnn_cls: 0.0170, rcnn_box 0.0499,
+			img_loss 0.0614,ins_loss 0.0709,cst_loss 0.0140
+[session 1][epoch  8][iter 1600/2000] loss: 1.2292, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 28.393342
+			category_cls: 0.6449, rpn_cls: 0.0128, rpn_box: 0.0039, rcnn_cls: 0.0420, rcnn_box 0.1045,
+			img_loss 0.0749,ins_loss 0.0689,cst_loss 0.0174
+[session 1][epoch  8][iter 1700/2000] loss: 0.9365, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 29.036630
+			category_cls: 0.6026, rpn_cls: 0.0072, rpn_box: 0.0088, rcnn_cls: 0.0138, rcnn_box 0.0634,
+			img_loss 0.0696,ins_loss 0.0685,cst_loss 0.0056
+[session 1][epoch  8][iter 1800/2000] loss: 0.9057, lr: 1.00e-03
+			fg/bg=(15/113), time cost: 28.159638
+			category_cls: 0.6038, rpn_cls: 0.0054, rpn_box: 0.0005, rcnn_cls: 0.0184, rcnn_box 0.0173,
+			img_loss 0.0683,ins_loss 0.0686,cst_loss 0.0059
+[session 1][epoch  8][iter 1900/2000] loss: 0.9394, lr: 1.00e-03
+			fg/bg=(18/110), time cost: 28.293577
+			category_cls: 0.6070, rpn_cls: 0.0079, rpn_box: 0.0008, rcnn_cls: 0.0193, rcnn_box 0.0411,
+			img_loss 0.0675,ins_loss 0.0688,cst_loss 0.0060
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_8.pth
+[session 1][epoch  9][iter    0/2000] loss: 1.2894, lr: 1.00e-03
+			fg/bg=(29/99), time cost: 0.334091
+			category_cls: 0.5946, rpn_cls: 0.0241, rpn_box: 0.0471, rcnn_cls: 0.0175, rcnn_box 0.2785,
+			img_loss 0.0690,ins_loss 0.0688,cst_loss 0.0009
+[session 1][epoch  9][iter  100/2000] loss: 0.9079, lr: 1.00e-03
+			fg/bg=(30/98), time cost: 28.638517
+			category_cls: 0.5891, rpn_cls: 0.0319, rpn_box: 0.0745, rcnn_cls: 0.1279, rcnn_box 0.2958,
+			img_loss 0.0662,ins_loss 0.0696,cst_loss 0.0021
+[session 1][epoch  9][iter  200/2000] loss: 0.9242, lr: 1.00e-03
+			fg/bg=(3/125), time cost: 28.676518
+			category_cls: 0.5589, rpn_cls: 0.0551, rpn_box: 0.0221, rcnn_cls: 0.0770, rcnn_box 0.0668,
+			img_loss 0.0680,ins_loss 0.0695,cst_loss 0.0109
+[session 1][epoch  9][iter  300/2000] loss: 0.9737, lr: 1.00e-03
+			fg/bg=(7/121), time cost: 28.008227
+			category_cls: 0.6049, rpn_cls: 0.0154, rpn_box: 0.1113, rcnn_cls: 0.0246, rcnn_box 0.0405,
+			img_loss 0.0674,ins_loss 0.0690,cst_loss 0.0051
+[session 1][epoch  9][iter  400/2000] loss: 0.9511, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.675228
+			category_cls: 0.6193, rpn_cls: 0.0541, rpn_box: 0.1139, rcnn_cls: 0.0287, rcnn_box 0.2146,
+			img_loss 0.0716,ins_loss 0.0691,cst_loss 0.0090
+[session 1][epoch  9][iter  500/2000] loss: 0.8734, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.388793
+			category_cls: 0.5874, rpn_cls: 0.0069, rpn_box: 0.0011, rcnn_cls: 0.0041, rcnn_box 0.0247,
+			img_loss 0.0694,ins_loss 0.0687,cst_loss 0.0028
+[session 1][epoch  9][iter  600/2000] loss: 0.9617, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.429687
+			category_cls: 0.5878, rpn_cls: 0.0188, rpn_box: 0.0022, rcnn_cls: 0.1092, rcnn_box 0.0886,
+			img_loss 0.0684,ins_loss 0.0687,cst_loss 0.0006
+[session 1][epoch  9][iter  700/2000] loss: 0.9166, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.267073
+			category_cls: 0.6412, rpn_cls: 0.0558, rpn_box: 0.1458, rcnn_cls: 0.0401, rcnn_box 0.2033,
+			img_loss 0.0698,ins_loss 0.0690,cst_loss 0.0061
+[session 1][epoch  9][iter  800/2000] loss: 0.9093, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.063982
+			category_cls: 0.6064, rpn_cls: 0.0328, rpn_box: 0.0497, rcnn_cls: 0.1229, rcnn_box 0.2440,
+			img_loss 0.0695,ins_loss 0.0694,cst_loss 0.0018
+[session 1][epoch  9][iter  900/2000] loss: 0.9706, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.286795
+			category_cls: 0.6116, rpn_cls: 0.0032, rpn_box: 0.0012, rcnn_cls: 0.0077, rcnn_box 0.0586,
+			img_loss 0.0661,ins_loss 0.0691,cst_loss 0.0033
+[session 1][epoch  9][iter 1000/2000] loss: 0.8935, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.387864
+			category_cls: 0.5990, rpn_cls: 0.0032, rpn_box: 0.0018, rcnn_cls: 0.0139, rcnn_box 0.0086,
+			img_loss 0.0679,ins_loss 0.0691,cst_loss 0.0014
+[session 1][epoch  9][iter 1100/2000] loss: 0.9210, lr: 1.00e-03
+			fg/bg=(8/120), time cost: 28.306331
+			category_cls: 0.5946, rpn_cls: 0.0010, rpn_box: 0.0021, rcnn_cls: 0.0397, rcnn_box 0.0298,
+			img_loss 0.0688,ins_loss 0.0695,cst_loss 0.0291
+[session 1][epoch  9][iter 1200/2000] loss: 0.9180, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 27.987727
+			category_cls: 0.6023, rpn_cls: 0.0117, rpn_box: 0.0008, rcnn_cls: 0.0084, rcnn_box 0.0145,
+			img_loss 0.0689,ins_loss 0.0684,cst_loss 0.0077
+[session 1][epoch  9][iter 1300/2000] loss: 0.9458, lr: 1.00e-03
+			fg/bg=(6/122), time cost: 28.074569
+			category_cls: 0.5876, rpn_cls: 0.0295, rpn_box: 0.0022, rcnn_cls: 0.0424, rcnn_box 0.0285,
+			img_loss 0.0688,ins_loss 0.0692,cst_loss 0.0028
+[session 1][epoch  9][iter 1400/2000] loss: 0.8931, lr: 1.00e-03
+			fg/bg=(18/110), time cost: 28.306655
+			category_cls: 0.5960, rpn_cls: 0.0444, rpn_box: 0.0057, rcnn_cls: 0.0176, rcnn_box 0.0597,
+			img_loss 0.0555,ins_loss 0.0708,cst_loss 0.0955
+[session 1][epoch  9][iter 1500/2000] loss: 0.9854, lr: 1.00e-03
+			fg/bg=(13/115), time cost: 28.385463
+			category_cls: 0.5864, rpn_cls: 0.0050, rpn_box: 0.0024, rcnn_cls: 0.0156, rcnn_box 0.0486,
+			img_loss 0.0652,ins_loss 0.0694,cst_loss 0.0042
+[session 1][epoch  9][iter 1600/2000] loss: 0.9310, lr: 1.00e-03
+			fg/bg=(7/121), time cost: 28.237194
+			category_cls: 0.5680, rpn_cls: 0.0021, rpn_box: 0.0014, rcnn_cls: 0.0134, rcnn_box 0.0541,
+			img_loss 0.0636,ins_loss 0.0715,cst_loss 0.0180
+[session 1][epoch  9][iter 1700/2000] loss: 0.8993, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 28.358477
+			category_cls: 0.5797, rpn_cls: 0.0118, rpn_box: 0.0213, rcnn_cls: 0.0039, rcnn_box 0.0680,
+			img_loss 0.0693,ins_loss 0.0685,cst_loss 0.0099
+[session 1][epoch  9][iter 1800/2000] loss: 0.8642, lr: 1.00e-03
+			fg/bg=(21/107), time cost: 27.436278
+			category_cls: 0.5689, rpn_cls: 0.0016, rpn_box: 0.0014, rcnn_cls: 0.0095, rcnn_box 0.1144,
+			img_loss 0.0680,ins_loss 0.0678,cst_loss 0.0015
+[session 1][epoch  9][iter 1900/2000] loss: 0.9172, lr: 1.00e-03
+			fg/bg=(29/99), time cost: 28.181443
+			category_cls: 0.5886, rpn_cls: 0.0017, rpn_box: 0.0060, rcnn_cls: 0.0176, rcnn_box 0.1122,
+			img_loss 0.0694,ins_loss 0.0685,cst_loss 0.0023
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_9.pth
+[session 1][epoch 10][iter    0/2000] loss: 0.8477, lr: 1.00e-03
+			fg/bg=(9/119), time cost: 0.342813
+			category_cls: 0.5698, rpn_cls: 0.0055, rpn_box: 0.0130, rcnn_cls: 0.0160, rcnn_box 0.1011,
+			img_loss 0.0646,ins_loss 0.0695,cst_loss 0.0100
+[session 1][epoch 10][iter  100/2000] loss: 0.8548, lr: 1.00e-03
+			fg/bg=(26/102), time cost: 28.909473
+			category_cls: 0.6142, rpn_cls: 0.1032, rpn_box: 0.0491, rcnn_cls: 0.0269, rcnn_box 0.2105,
+			img_loss 0.0684,ins_loss 0.0705,cst_loss 0.0078
+[session 1][epoch 10][iter  200/2000] loss: 0.9084, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 27.976038
+			category_cls: 0.5733, rpn_cls: 0.0004, rpn_box: 0.0003, rcnn_cls: 0.0329, rcnn_box 0.0286,
+			img_loss 0.0681,ins_loss 0.0689,cst_loss 0.0025
+[session 1][epoch 10][iter  300/2000] loss: 0.9057, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.934940
+			category_cls: 0.5759, rpn_cls: 0.0004, rpn_box: 0.0006, rcnn_cls: 0.0374, rcnn_box 0.0196,
+			img_loss 0.0684,ins_loss 0.0693,cst_loss 0.0053
+[session 1][epoch 10][iter  400/2000] loss: 0.8742, lr: 1.00e-03
+			fg/bg=(19/109), time cost: 28.739273
+			category_cls: 0.5849, rpn_cls: 0.0034, rpn_box: 0.0036, rcnn_cls: 0.0294, rcnn_box 0.0507,
+			img_loss 0.0666,ins_loss 0.0698,cst_loss 0.0080
+[session 1][epoch 10][iter  500/2000] loss: 0.9094, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.251655
+			category_cls: 0.5825, rpn_cls: 0.0075, rpn_box: 0.0513, rcnn_cls: 0.0520, rcnn_box 0.1592,
+			img_loss 0.0706,ins_loss 0.0689,cst_loss 0.0320
+[session 1][epoch 10][iter  600/2000] loss: 0.9171, lr: 1.00e-03
+			fg/bg=(22/106), time cost: 28.831037
+			category_cls: 0.6293, rpn_cls: 0.0050, rpn_box: 0.0035, rcnn_cls: 0.0293, rcnn_box 0.0759,
+			img_loss 0.0750,ins_loss 0.0690,cst_loss 0.0508
+[session 1][epoch 10][iter  700/2000] loss: 0.8965, lr: 1.00e-03
+			fg/bg=(25/103), time cost: 27.947548
+			category_cls: 0.5891, rpn_cls: 0.0462, rpn_box: 0.0148, rcnn_cls: 0.0313, rcnn_box 0.1326,
+			img_loss 0.0684,ins_loss 0.0695,cst_loss 0.0114
+[session 1][epoch 10][iter  800/2000] loss: 0.9084, lr: 1.00e-03
+			fg/bg=(22/106), time cost: 28.687362
+			category_cls: 0.6247, rpn_cls: 0.0551, rpn_box: 0.0307, rcnn_cls: 0.0233, rcnn_box 0.1064,
+			img_loss 0.0746,ins_loss 0.0693,cst_loss 0.0241
+[session 1][epoch 10][iter  900/2000] loss: 0.9512, lr: 1.00e-03
+			fg/bg=(25/103), time cost: 28.442481
+			category_cls: 0.5873, rpn_cls: 0.0212, rpn_box: 0.0104, rcnn_cls: 0.0102, rcnn_box 0.0359,
+			img_loss 0.0701,ins_loss 0.0678,cst_loss 0.0198
+[session 1][epoch 10][iter 1000/2000] loss: 0.9449, lr: 1.00e-03
+			fg/bg=(14/114), time cost: 28.528402
+			category_cls: 0.5593, rpn_cls: 0.0035, rpn_box: 0.0093, rcnn_cls: 0.0228, rcnn_box 0.0528,
+			img_loss 0.0626,ins_loss 0.0717,cst_loss 0.0112
+[session 1][epoch 10][iter 1100/2000] loss: 0.9360, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.769221
+			category_cls: 0.6007, rpn_cls: 0.0116, rpn_box: 0.0078, rcnn_cls: 0.0506, rcnn_box 0.1108,
+			img_loss 0.0759,ins_loss 0.0696,cst_loss 0.0137
+[session 1][epoch 10][iter 1200/2000] loss: 0.9518, lr: 1.00e-03
+			fg/bg=(32/96), time cost: 28.835376
+			category_cls: 0.5669, rpn_cls: 0.0084, rpn_box: 0.0025, rcnn_cls: 0.0249, rcnn_box 0.0560,
+			img_loss 0.0685,ins_loss 0.0692,cst_loss 0.0138
+[session 1][epoch 10][iter 1300/2000] loss: 0.9513, lr: 1.00e-03
+			fg/bg=(12/116), time cost: 28.037338
+			category_cls: 0.6071, rpn_cls: 0.0158, rpn_box: 0.0007, rcnn_cls: 0.0009, rcnn_box 0.0117,
+			img_loss 0.0684,ins_loss 0.0692,cst_loss 0.0014
+[session 1][epoch 10][iter 1400/2000] loss: 0.8983, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 27.579390
+			category_cls: 0.5935, rpn_cls: 0.0169, rpn_box: 0.0022, rcnn_cls: 0.0159, rcnn_box 0.0469,
+			img_loss 0.0688,ins_loss 0.0699,cst_loss 0.0181
+[session 1][epoch 10][iter 1500/2000] loss: 0.9065, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.362144
+			category_cls: 0.5908, rpn_cls: 0.0067, rpn_box: 0.0028, rcnn_cls: 0.0012, rcnn_box 0.0594,
+			img_loss 0.0681,ins_loss 0.0691,cst_loss 0.0049
+[session 1][epoch 10][iter 1600/2000] loss: 0.9041, lr: 1.00e-03
+			fg/bg=(27/101), time cost: 28.595505
+			category_cls: 0.6095, rpn_cls: 0.0271, rpn_box: 0.0057, rcnn_cls: 0.0565, rcnn_box 0.0673,
+			img_loss 0.0700,ins_loss 0.0682,cst_loss 0.0009
+[session 1][epoch 10][iter 1700/2000] loss: 0.9112, lr: 1.00e-03
+			fg/bg=(11/117), time cost: 28.511382
+			category_cls: 0.5732, rpn_cls: 0.0008, rpn_box: 0.0042, rcnn_cls: 0.0106, rcnn_box 0.1918,
+			img_loss 0.0688,ins_loss 0.0689,cst_loss 0.0008
+[session 1][epoch 10][iter 1800/2000] loss: 0.9013, lr: 1.00e-03
+			fg/bg=(16/112), time cost: 28.408361
+			category_cls: 0.6138, rpn_cls: 0.0020, rpn_box: 0.0020, rcnn_cls: 0.0207, rcnn_box 0.0568,
+			img_loss 0.0621,ins_loss 0.0712,cst_loss 0.0111
+[session 1][epoch 10][iter 1900/2000] loss: 0.9287, lr: 1.00e-03
+			fg/bg=(10/118), time cost: 28.305511
+			category_cls: 0.5705, rpn_cls: 0.0034, rpn_box: 0.0100, rcnn_cls: 0.0179, rcnn_box 0.0571,
+			img_loss 0.0576,ins_loss 0.0739,cst_loss 0.0828
+save model: experiments/DA_Faster/LEVIR/model/LEVIR_10.pth
+Traceback (most recent call last):
+  File "da_train_net.py", line 607, in <module>
+    writer.add_scalar('LR/learning_rate', lr.item(), step + (epoch - 1) * iters_per_epoch)
+AttributeError: 'float' object has no attribute 'item'

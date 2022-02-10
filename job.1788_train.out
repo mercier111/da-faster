@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "da_train_net.py", line 21, in <module>
+    from model.da_faster_rcnn.resnet import resnet
+  File "/home/pya/da-faster/lib/model/da_faster_rcnn/resnet.py", line 9, in <module>
+    from model.da_faster_rcnn.faster_rcnn import _fasterRCNN
+  File "/home/pya/da-faster/lib/model/da_faster_rcnn/faster_rcnn.py", line 6, in <module>
+    from model.da_faster_rcnn.DA import _ImageDA, _InstanceDA
+  File "/home/pya/da-faster/lib/model/da_faster_rcnn/DA.py", line 8, in <module>
+    from model.da_faster_rcnn.LabelResizeLayer import (
+  File "/home/pya/da-faster/lib/model/da_faster_rcnn/LabelResizeLayer.py", line 9, in <module>
+    from model.utils.config import cfg
+  File "/home/pya/da-faster/lib/model/utils/config.py", line 9, in <module>
+    from easydict import EasyDict as edict
+ModuleNotFoundError: No module named 'easydict'

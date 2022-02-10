@@ -1,0 +1,144 @@
+Called with args:
+Namespace(batch_size=1, bayes=False, checkpoint_interval=1, class_agnostic=False, cuda=True, dataset='SSDD', disp_interval=100, instance_weight_value=1.0, lamda=0.1, large_scale=False, lr=0.001, lr_decay_gamma=0.1, lr_decay_step=10, max_epochs=30, max_iter=2000, model_name='', net='res101', num_workers=0, optimizer='sgd', pretrained_path='', resume=False, save_dir='experiments/DA_Faster/SSDD/model', session=1, start_epoch=1)
+loading our dataset...........
+Using config:
+{'ANCHOR_RATIOS': [0.5, 1, 2],
+ 'ANCHOR_SCALES': [8, 16, 32],
+ 'CROP_RESIZE_WITH_MAX_POOL': False,
+ 'CUDA': False,
+ 'DATA_DIR': '/home/pya/da-faster/data',
+ 'DEDUP_BOXES': 0.0625,
+ 'EPS': 1e-14,
+ 'EXP_DIR': 'res101',
+ 'FEAT_STRIDE': [16],
+ 'GPU_ID': 0,
+ 'MATLAB': 'matlab',
+ 'MAX_NUM_GT_BOXES': 20,
+ 'MOBILENET': {'DEPTH_MULTIPLIER': 1.0,
+               'FIXED_LAYERS': 5,
+               'REGU_DEPTH': False,
+               'WEIGHT_DECAY': 4e-05},
+ 'PIXEL_MEANS': array([[[0, 0, 0]]]),
+ 'POOLING_MODE': 'align',
+ 'POOLING_SIZE': 7,
+ 'RESNET': {'FIXED_BLOCKS': 1, 'MAX_POOL': False},
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': '/home/pya/da-faster',
+ 'TEST': {'BBOX_REG': True,
+          'HAS_RPN': True,
+          'MAX_SIZE': 1000,
+          'MODE': 'nms',
+          'NMS': 0.3,
+          'PROPOSAL_METHOD': 'gt',
+          'RPN_MIN_SIZE': 16,
+          'RPN_NMS_THRESH': 0.7,
+          'RPN_POST_NMS_TOP_N': 300,
+          'RPN_PRE_NMS_TOP_N': 6000,
+          'RPN_TOP_N': 5000,
+          'SCALES': [400],
+          'SVM': False},
+ 'TRAIN': {'ASPECT_GROUPING': False,
+           'BATCH_SIZE': 128,
+           'BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'BBOX_NORMALIZE_MEANS': [0.0, 0.0, 0.0, 0.0],
+           'BBOX_NORMALIZE_STDS': [0.1, 0.1, 0.2, 0.2],
+           'BBOX_NORMALIZE_TARGETS': True,
+           'BBOX_NORMALIZE_TARGETS_PRECOMPUTED': True,
+           'BBOX_REG': True,
+           'BBOX_THRESH': 0.5,
+           'BG_THRESH_HI': 0.5,
+           'BG_THRESH_LO': 0.0,
+           'BIAS_DECAY': False,
+           'BN_TRAIN': False,
+           'DISPLAY': 20,
+           'DOUBLE_BIAS': False,
+           'FG_FRACTION': 0.25,
+           'FG_THRESH': 0.5,
+           'GAMMA': 0.1,
+           'HAS_RPN': True,
+           'IMS_PER_BATCH': 1,
+           'LEARNING_RATE': 0.001,
+           'MAX_SIZE': 1200,
+           'MOMENTUM': 0.9,
+           'PROPOSAL_METHOD': 'gt',
+           'RPN_BATCHSIZE': 256,
+           'RPN_BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'RPN_CLOBBER_POSITIVES': False,
+           'RPN_FG_FRACTION': 0.5,
+           'RPN_MIN_SIZE': 8,
+           'RPN_NEGATIVE_OVERLAP': 0.3,
+           'RPN_NMS_THRESH': 0.7,
+           'RPN_POSITIVE_OVERLAP': 0.7,
+           'RPN_POSITIVE_WEIGHT': -1.0,
+           'RPN_POST_NMS_TOP_N': 2000,
+           'RPN_PRE_NMS_TOP_N': 12000,
+           'SCALES': [400, 600],
+           'SNAPSHOT_ITERS': 5000,
+           'SNAPSHOT_KEPT': 3,
+           'SNAPSHOT_PREFIX': 'res101_faster_rcnn',
+           'STEPSIZE': [30000],
+           'SUMMARY_INTERVAL': 180,
+           'TRIM_HEIGHT': 600,
+           'TRIM_WIDTH': 600,
+           'TRUNCATED': False,
+           'USE_ALL_GT': True,
+           'USE_FLIPPED': True,
+           'USE_GT': False,
+           'WEIGHT_DECAY': 0.0001},
+ 'USE_GPU_NMS': True}
+SSDD_train
+Loaded dataset `SSDD_train` for training
+Set proposal method: gt
+Appending horizontally-flipped training examples...
+SSDD_train gt roidb loaded from /home/pya/da-faster/experiments/domain-adaptation/cache/SSDD_train_gt_roidb.pkl
+done
+Preparing training data...
+done
+before filtering, there are 928 images...
+after filtering, there are 928 images...
+928
+LEVIR_trainval
+Loaded dataset `LEVIR_trainval` for training
+Set proposal method: gt
+Appending horizontally-flipped training examples...
+LEVIR_trainval gt roidb loaded from /home/pya/da-faster/experiments/domain-adaptation/cache/LEVIR_trainval_gt_roidb.pkl
+done
+Preparing training data...
+done
+before filtering, there are 1610 images...
+after filtering, there are 1610 images...
+1610
+source 928 target 1610 roidb entries
+/home/pya/miniconda3/envs/da-faster/lib/python3.7/site-packages/torch/nn/_reduction.py:42: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
+  warnings.warn(warning.format(ret))
+Loading pretrained weights from datasets/pretrained_model/resnet101.pth
+/home/pya/miniconda3/envs/da-faster/lib/python3.7/site-packages/torch/nn/functional.py:1806: UserWarning: nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+  warnings.warn("nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.")
+[session 1][epoch  1][iter    0/2000] loss: 12.2843, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 3.037763
+			category_cls: 0.9086, rpn_cls: 0.9978, rpn_box: 0.1655, rcnn_cls: 0.3995, rcnn_box 0.0603,
+			img_loss 0.0605,ins_loss 0.2793,cst_loss 1.9197
+[session 1][epoch  1][iter  100/2000] loss: 5.3055, lr: 1.00e-03
+			fg/bg=(3/125), time cost: 29.083825
+			category_cls: 0.6887, rpn_cls: 0.0418, rpn_box: 0.0350, rcnn_cls: 0.0662, rcnn_box 0.0925,
+			img_loss 0.0685,ins_loss 0.0698,cst_loss 0.0341
+[session 1][epoch  1][iter  200/2000] loss: 2.1756, lr: 1.00e-03
+			fg/bg=(1/127), time cost: 28.573462
+			category_cls: 0.6498, rpn_cls: 0.0573, rpn_box: 0.0686, rcnn_cls: 0.0324, rcnn_box 0.0016,
+			img_loss 0.0683,ins_loss 0.0691,cst_loss 0.0241
+[session 1][epoch  1][iter  300/2000] loss: 1.5281, lr: 1.00e-03
+			fg/bg=(3/125), time cost: 28.416424
+			category_cls: 0.7091, rpn_cls: 0.1722, rpn_box: 0.0403, rcnn_cls: 0.0596, rcnn_box 0.0501,
+			img_loss 0.0682,ins_loss 0.0682,cst_loss 0.0086
+[session 1][epoch  1][iter  400/2000] loss: 1.4214, lr: 1.00e-03
+			fg/bg=(22/106), time cost: 28.584718
+			category_cls: 0.7815, rpn_cls: 0.5652, rpn_box: 0.5254, rcnn_cls: 0.4894, rcnn_box 0.2016,
+			img_loss 0.0666,ins_loss 0.0689,cst_loss 0.0402
+[session 1][epoch  1][iter  500/2000] loss: 1.3910, lr: 1.00e-03
+			fg/bg=(3/125), time cost: 29.643252
+			category_cls: 0.7478, rpn_cls: 0.0817, rpn_box: 0.2570, rcnn_cls: 0.0369, rcnn_box 0.0251,
+			img_loss 0.0691,ins_loss 0.0692,cst_loss 0.0043
+[session 1][epoch  1][iter  600/2000] loss: 1.4044, lr: 1.00e-03
+			fg/bg=(7/121), time cost: 29.317690
+			category_cls: 0.7308, rpn_cls: 0.1616, rpn_box: 0.0023, rcnn_cls: 0.0852, rcnn_box 0.0522,
+			img_loss 0.0687,ins_loss 0.0677,cst_loss 0.0042
