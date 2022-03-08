@@ -19,7 +19,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
 from model.bda_faster_rcnn.resnet import resnet
-from model.bda_faster_rcnn.vgg16 import vgg16
+#from model.bda_faster_rcnn.vgg16 import vgg16
 from model.utils.config import cfg, cfg_from_file, cfg_from_list, get_output_dir
 from model.utils.net_utils import (
     adjust_learning_rate,

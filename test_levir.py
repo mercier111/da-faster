@@ -2,11 +2,11 @@ import os
 
 net = "res101"
 part = "test_t"
-dataset = "SSDD"
+dataset = "LEVIR"
 begin_epoch = 1
-end_epoch = 8
+end_epoch = 20
 
-model_prefix = "experiments/DA_Faster/SSDD/model/SSDD_"
+model_prefix = "experiments/DA_Faster/LEVIR/model/LEVIR_"
 
 commond = "python -u eval/test.py --net {}  --cuda --dataset {} --part {} --model_dir {}".format(net, dataset, part, model_prefix)
 

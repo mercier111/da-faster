@@ -18,8 +18,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
-from model.da_faster_rcnn.resnet import resnet
-from model.da_faster_rcnn.vgg16 import vgg16
+from model.cycle_faster_rcnn.resnet import resnet
+from model.cycle_faster_rcnn.vgg16 import vgg16
 from model.utils.config import cfg, cfg_from_file, cfg_from_list, get_output_dir
 from model.utils.net_utils import (
     adjust_learning_rate,
@@ -35,8 +35,6 @@ from torch.autograd import Variable
 from torch.utils.data.sampler import Sampler
 
 from torch.utils.tensorboard import SummaryWriter
-
-from sghmc import SGHMC
 
 def infinite_data_loader(data_loader):
     while True:
@@ -185,6 +183,26 @@ def parse_args():
     )
     parser.add_argument(
         "--start_epoch", dest="start_epoch", help="starting epoch", default=1, type=int
+    )
+
+    parser.add_argument(
+        "--use_norm_da", dest="use_norm_da", help="use norm da or not", action="store_true"
+    )
+
+    parser.add_argument(
+        "--use_img_da", dest="use_img_da", help="use img da or not", action="store_true"
+    )
+
+    parser.add_argument(
+        "--use_sk_da", dest="use_sk_da", help="use sk da or not", action="store_true"
+    )
+
+    parser.add_argument(
+        "--use_detect_da", dest="use_detect_da", help="use detect da or not", action="store_true"
+    )
+
+    parser.add_argument(
+        "--chaos", dest="chaos", help="stat use net", action="store_true"
     )
 
     args = parser.parse_args()
@@ -646,52 +664,83 @@ if __name__ == "__main__":
                 rois,
                 cls_prob,
                 bbox_pred,
-                img_cls_loss,
+                tgt_rois, 
+                tgt_cls_prob,
+                tgt_bbox_pred,
                 rpn_loss_cls,
-                rpn_loss_box,
+                rpn_loss_bbox,
+                tgt_rpn_loss_cls, 
+                tgt_rpn_loss_bbox, 
                 RCNN_loss_cls,
                 RCNN_loss_bbox,
-                rois_label,
-                DA_img_loss_cls,
-                DA_ins_loss_cls,
-                tgt_DA_img_loss_cls,
-                tgt_DA_ins_loss_cls,
-                DA_cst_loss,
-                tgt_DA_cst_loss,
-                base_feat, 
-                tgt_base_feat, 
-
+                tgt_RCNN_loss_cls, 
+                tgt_RCNN_loss_bbox, 
+                cst_bbox_loss,  
+                tgt_cst_bbox_loss, 
+                cst_cls_loss, 
+                tgt_cst_cls_loss,
+                source_skews, 
+                target_skews, 
+                source_kurtoses, 
+                target_kurtoses, 
+                img_cls, 
+                fake_img_cls, 
+                tgt_img_cls, 
+                fake_tgt_img_cls, 
+                source_norm_loss, 
+                target_norm_loss
             ) = fasterRCNN(
                 im_data,
                 im_info,
-                im_cls_lb,
+                #im_cls_lb,
                 gt_boxes,
                 num_boxes,
-                need_backprop,
+                #need_backprop,
                 tgt_im_data,
                 tgt_im_info,
                 tgt_gt_boxes,
                 tgt_num_boxes,
-                tgt_need_backprop,
+                args.chaos,
+                #tgt_need_backprop,
                 #weight_value=args.instance_weight_value,
             )
             loss = (
-                #img_cls_loss.mean()
                 rpn_loss_cls.mean()
-                + rpn_loss_box.mean()
+                + rpn_loss_bbox.mean()
+                + tgt_rpn_loss_cls.mean()
+                + tgt_rpn_loss_bbox.mean()
                 + RCNN_loss_cls.mean()
                 + RCNN_loss_bbox.mean()
-                #+ args.lamda
-                + 1
-                * (
-                    DA_img_loss_cls.mean()
-                    + DA_ins_loss_cls.mean()
-                    + tgt_DA_img_loss_cls.mean()
-                    + tgt_DA_ins_loss_cls.mean()
-                    + DA_cst_loss.mean()
-                    + tgt_DA_cst_loss.mean()
-                )
+                + tgt_RCNN_loss_cls.mean()
+                + tgt_RCNN_loss_bbox.mean()
             )
+            if args.use_img_da:
+                loss += 1 * ( img_cls.mean()
+                                + fake_img_cls.mean() 
+                                + tgt_img_cls.mean()
+                                + fake_tgt_img_cls.mean()
+                                )
+            
+            if args.use_norm_da:
+                loss += source_norm_loss.mean() 
+                loss += target_norm_loss.mean() 
+            
+            if args.use_sk_da:
+                loss += (source_skews.mean()
+                         + target_skews.mean()
+                         + source_kurtoses.mean()
+                         + target_kurtoses.mean()
+                         )
+                loss += torch.abs(source_skews.mean() - target_skews.mean())
+                loss += torch.abs(source_kurtoses.mean() - target_kurtoses.mean())
+            
+            if args.use_detect_da:
+                loss += (cst_bbox_loss.mean()
+                        + tgt_cst_bbox_loss.mean()
+                        + cst_cls_loss.mean()
+                        + tgt_cst_cls_loss.mean()
+                        )
+             
             loss_temp += loss.item()
             
             bayes_loss = 0
@@ -700,23 +749,30 @@ if __name__ == "__main__":
 
             real_step = step + (epoch - 1) * iters_per_epoch
 
-            writer.add_scalar('Detect_loss/rpn_cls', rpn_loss_cls.item(), real_step)
-            writer.add_scalar('Detect_loss/rpn_box', rpn_loss_box.item(), real_step)
-            writer.add_scalar('Detect_loss/rcnn_cls', RCNN_loss_cls.item(), real_step)
-            writer.add_scalar('Detect_loss/rcnn_box', RCNN_loss_bbox.item(), real_step)
+            #writer.add_scalar('Detect_loss/rpn_cls', rpn_loss_cls.item(), real_step)
+            #writer.add_scalar('Detect_loss/rpn_box', rpn_loss_box.item(), real_step)
+            #writer.add_scalar('Detect_loss/rcnn_cls', RCNN_loss_cls.item(), real_step)
+            #writer.add_scalar('Detect_loss/rcnn_box', RCNN_loss_bbox.item(), real_step)
 
-            writer.add_scalars('Da_loss/img_cls', {'source' : DA_img_loss_cls.item(),
-                                                  'target' : tgt_DA_img_loss_cls.item()}
-                                                  , real_step)
+            #writer.add_scalars('Da_loss/img_cls', {'source' : DA_img_loss_cls.item(),
+            #                                      'target' : tgt_DA_img_loss_cls.item()}
+            #                                      , real_step)
 
-            writer.add_scalars('Da_loss/ins_cls', {'source' : DA_ins_loss_cls.item(),
-                                                  'target' : tgt_DA_ins_loss_cls.item()}
-                                                  , real_step)
-            writer.add_scalars('Da_loss/cst_loss', {'source' : DA_cst_loss.item(),
-                                                    'target' : tgt_DA_cst_loss.item()}
-                                                    , real_step)
+            #writer.add_scalars('Da_loss/ins_cls', {'source' : DA_ins_loss_cls.item(),
+            #                                      'target' : tgt_DA_ins_loss_cls.item()}
+            #                                      , real_step)
+            #writer.add_scalars('Da_loss/cst_loss', {'source' : DA_cst_loss.item(),
+            #                                        'target' : tgt_DA_cst_loss.item()}
+            #                                        , real_step)
+            
+            if real_step % 100 == 0:
+                writer.add_scalars('Da_stat/skews', {'source' : source_skews.item(),
+                                                     'target' : target_skews.item()}
+                                                     , real_step/100)
 
-
+                writer.add_scalars('Da_stat/kurtoses', {'source' : source_kurtoses.item(),
+                                                        'target' : target_kurtoses.item()}
+                                                        , real_step/100)
             # backward
             optimizer.zero_grad()
             loss.backward()
@@ -730,26 +786,23 @@ if __name__ == "__main__":
                 if step > 0:
                     loss_temp /= args.disp_interval + 1
 
-                loss_category_cls = img_cls_loss.item()
                 loss_rpn_cls = rpn_loss_cls.item()
-                loss_rpn_box = rpn_loss_box.item()
+                loss_rpn_box = rpn_loss_bbox.item()
+                tgt_loss_rpn_cls = tgt_rpn_loss_cls.item()
+                tgt_loss_rpn_box = tgt_rpn_loss_bbox.item()
                 loss_rcnn_cls = RCNN_loss_cls.item()
                 loss_rcnn_box = RCNN_loss_bbox.item()
-                loss_DA_img_cls = (
-                    args.lamda
-                    * (DA_img_loss_cls.item() + tgt_DA_img_loss_cls.item())
-                    / 2
-                )
-                loss_DA_ins_cls = (
-                    args.lamda
-                    * (DA_ins_loss_cls.item() + tgt_DA_ins_loss_cls.item())
-                    / 2
-                )
-                loss_DA_cst = (
-                    args.lamda * (DA_cst_loss.item() + tgt_DA_cst_loss.item()) / 2
-                )
-                fg_cnt = torch.sum(rois_label.data.ne(0))
-                bg_cnt = rois_label.data.numel() - fg_cnt
+                tgt_loss_rcnn_cls = tgt_RCNN_loss_cls.item()
+                tgt_loss_rcnn_box = tgt_RCNN_loss_bbox.item()
+                cst_bbox_loss = (cst_bbox_loss.item() + tgt_cst_bbox_loss.item())/2
+                cst_cls_loss = (cst_cls_loss.item() + tgt_cst_cls_loss.item())/2
+                source_norm_loss = source_norm_loss.item()
+                target_norm_loss = target_norm_loss.item()
+
+                #fg_cnt = torch.sum(rois_label.data.ne(0))
+                #bg_cnt = rois_label.data.numel() - fg_cnt
+                fg_cnt = 0
+                bg_cnt = 0
          
                 print(
                     "[session %d][epoch %2d][iter %4d/%4d] loss: %.4f, lr: %.2e"
@@ -759,26 +812,38 @@ if __name__ == "__main__":
                     "\t\t\tfg/bg=(%d/%d), time cost: %f" % (fg_cnt, bg_cnt, end - start)
                 )
                 print(
-                    "\t\t\tcategory_cls: %.4f, rpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box %.4f,\n\t\t\timg_loss %.4f,ins_loss %.4f,cst_loss %.4f"
+                    "\t\t\trpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box %.4f,\n\t\t\ttgt_rpn_cls: %.4f,tgt_rpn_box: %.4f, tgt_rcnn_cls: %.4f, tgt_rcnn_box %.4f,\n\t\t\tcst_cls: %.4f, cst_bbox: %.4f, \n\t\t\tsource_skews: %.4f, target_skews: %.4f,\n\t\t\tsource_kurtoses: %.4f, target_kurtoses: %.4f, \n\t\t\tsource_cls: %.4f, fake_source_cls: %.4f, target_cls: %.4f, fake_target_cls: %.4f,\n\t\t\tsource_norm_cls: %.4f,target_norm_cls: %.4f"
                     % (
-                        loss_category_cls,
                         loss_rpn_cls,
                         loss_rpn_box,
                         loss_rcnn_cls,
                         loss_rcnn_box,
-                        loss_DA_img_cls,
-                        loss_DA_ins_cls,
-                        loss_DA_cst,
+                        tgt_loss_rpn_cls,
+                        tgt_loss_rpn_box,
+                        tgt_loss_rcnn_cls,
+                        tgt_loss_rcnn_box,
+                        cst_cls_loss, 
+                        cst_bbox_loss, 
+                        source_skews, 
+                        target_skews, 
+                        source_kurtoses, 
+                        target_kurtoses,
+                        img_cls, 
+                        fake_img_cls, 
+                        tgt_img_cls, 
+                        fake_tgt_img_cls, 
+                        source_norm_loss, 
+                        target_norm_loss
                     )
                 )
 
                 loss_temp = 0
                 start = time.time()
                 
-                writer.add_images('im_data', im_data, real_step)
-                writer.add_images('tgt_im_data', tgt_im_data, real_step)
-                writer.add_images('base_feat', base_feat[:,:3], real_step)
-                writer.add_images('tgt_base_feat', tgt_base_feat[:,:3], real_step)
+                #writer.add_images('im_data', im_data, real_step)
+                #writer.add_images('tgt_im_data', tgt_im_data, real_step)
+                #writer.add_images('base_feat', base_feat[:,:3], real_step)
+                #writer.add_images('tgt_base_feat', tgt_base_feat[:,:3], real_step)
                 
         if epoch % args.checkpoint_interval == 0 or epoch == args.max_epochs:
             save_name = os.path.join(

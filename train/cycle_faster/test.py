@@ -16,8 +16,8 @@ import torch.nn as nn
 import torch.optim as optim
 
 # from model.faster_rcnn.vgg16 import vgg16
-from model.faster_rcnn.resnet import resnet
-from model.faster_rcnn.vgg16 import vgg16
+from model.cycle_faster_rcnn.resnet import resnet
+from model.cycle_faster_rcnn.vgg16 import vgg16
 
 # from model.nms.nms_wrapper import nms
 from model.roi_layers import nms
@@ -157,6 +157,10 @@ def parse_args():
         help="USE_box_cotrain",
         default=True,
         type=bool,
+    )
+
+    parser.add_argument(
+        "--chaos", dest="chaos", help="stat use net", action="store_true"
     )
 
     args = parser.parse_args()
@@ -449,19 +453,42 @@ if __name__ == "__main__":
             rois,
             cls_prob,
             bbox_pred,
+            tgt_rois, 
+            tgt_cls_prob,
+            tgt_bbox_pred,
             rpn_loss_cls,
-            rpn_loss_box,
+            rpn_loss_bbox,
+            fake_tgt_rpn_loss_cls, 
+            fake_tgt_rpn_loss_bbox, 
             RCNN_loss_cls,
             RCNN_loss_bbox,
-            rois_label,
-        ) = fasterRCNN(im_data, im_info, gt_boxes, num_boxes)
+            fake_tgt_RCNN_loss_cls, 
+            fake_tgt_RCNN_loss_bbox, 
+            #rois_label,
+            #base_feat, 
+            #tgt_base_feat,
+            cst_bbox_loss,  
+            tgt_cst_bbox_loss, 
+            cst_cls_loss, 
+            tgt_cst_cls_loss,
+            source_skews, 
+            target_skews, 
+            source_kurtoses, 
+            target_kurtoses, 
+            img_cls, 
+            fake_img_cls, 
+            tgt_img_cls, 
+            fake_tgt_img_cls, 
+            source_norm_loss, 
+            target_norm_loss
+        ) = fasterRCNN(im_data, im_info, gt_boxes, num_boxes, im_data, im_info, gt_boxes, num_boxes, args.chaos)
 
-        scores = cls_prob.data
-        boxes = rois.data[:, :, 1:5]
+        scores = tgt_cls_prob.data
+        boxes = tgt_rois.data[:, :, 1:5]
 
         if cfg.TEST.BBOX_REG:
             # Apply bounding-box regression deltas
-            box_deltas = bbox_pred.data
+            box_deltas = tgt_bbox_pred.data
             if cfg.TRAIN.BBOX_NORMALIZE_TARGETS_PRECOMPUTED:
                 # Optionally normalize targets by a precomputed mean and stdev
                 if args.class_agnostic:
