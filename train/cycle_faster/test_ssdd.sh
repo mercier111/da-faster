@@ -10,4 +10,5 @@
 #SBATCH --mail-user=827174975@qq.com 
 
 
+
 python -u train/cycle_faster/test_ssdd.py

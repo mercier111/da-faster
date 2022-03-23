@@ -10,5 +10,5 @@
 #SBATCH --mail-user=827174975@qq.com 
 
 
-python -u test_ssdd.py 
-#python -u test_levir.py 
+#python -u test_ssdd.py 
+python -u test_levir.py 

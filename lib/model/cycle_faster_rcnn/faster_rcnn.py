@@ -16,7 +16,7 @@ from model.utils.net_utils import (
 )
 from torch.autograd import Variable
 
-from model.cycle_faster_rcnn.adain import Adain, Adain_with_da, Adain_with_chaos
+from model.cycle_faster_rcnn.adain import Adain, Adain_with_da, Adain_with_chaos, Adain_with_attention
 
 
 class _fasterRCNN(nn.Module):
@@ -51,8 +51,9 @@ class _fasterRCNN(nn.Module):
         self.target_D = _ImageDA(self.dout_base_model)
         self.adain = Adain_with_da(self.dout_base_model)
         self.adain_chaos = Adain_with_chaos(self.dout_base_model) 
-        #self.RCNN_instanceDA = _InstanceDA(in_channel)
-        
+        #self.adain_attention = Adain_with_attention(self.dout_base_model) 
+        self.source_instance = _InstanceDA(in_channel)
+        self.target_instance = _InstanceDA(in_channel)
         self.avg_pool = nn.AdaptiveAvgPool2d(output_size=(1, 1))
 
     def forward(
@@ -67,7 +68,8 @@ class _fasterRCNN(nn.Module):
         tgt_im_info,
         tgt_gt_boxes,
         tgt_num_boxes,
-        chaos=0
+        chaos=0, 
+        attention = 0
         #tgt_need_backprop,
     ):
 
@@ -93,16 +95,21 @@ class _fasterRCNN(nn.Module):
 
         # feed image data to base model to obtain base feature map
         tgt_base_feat = self.RCNN_base(tgt_im_data)
-        if not chaos:
-            (   fake_base_feat, fake_tgt_base_feat, 
-                source_skews, target_skews, source_kurtoses, target_kurtoses, 
-                source_norm_loss, target_norm_loss
-             ) = self.adain(base_feat, tgt_base_feat)
-        else:
+        if chaos:
             (   fake_base_feat, fake_tgt_base_feat, 
                 source_skews, target_skews, source_kurtoses, target_kurtoses, 
                 source_norm_loss, target_norm_loss
              ) = self.adain_chaos(base_feat, tgt_base_feat)
+        #elif attention:
+        #    (   fake_base_feat, fake_tgt_base_feat, 
+        #        source_skews, target_skews, source_kurtoses, target_kurtoses, 
+        #        source_norm_loss, target_norm_loss
+        #     ) = self.adain_attention(base_feat, tgt_base_feat)
+        else:
+            (   fake_base_feat, fake_tgt_base_feat, 
+                source_skews, target_skews, source_kurtoses, target_kurtoses, 
+                source_norm_loss, target_norm_loss
+             ) = self.adain(base_feat, tgt_base_feat)
 
         # feed base feature map tp RPN to obtain rois
         if self.training:
@@ -312,11 +319,13 @@ class _fasterRCNN(nn.Module):
         #########consistant loss 
         
         smooth_l1 = nn.SmoothL1Loss()
-        cst_bbox_loss = smooth_l1(bbox_pred.detach(), fake_tgt_bbox_pred)
-        tgt_cst_bbox_loss = smooth_l1(tgt_bbox_pred, fake_bbox_pred.detach())
+        #cst_bbox_loss = smooth_l1(bbox_pred, fake_tgt_bbox_pred)
+        tgt_cst_bbox_loss = smooth_l1(tgt_bbox_pred, fake_bbox_pred)
+        cst_bbox_loss = torch.Tensor([0]).cuda()
 
-        cst_cls_loss = smooth_l1(cls_prob.detach(), fake_tgt_cls_prob)
-        tgt_cst_cls_loss = smooth_l1(tgt_cls_prob, fake_cls_prob.detach())
+        #cst_cls_loss = smooth_l1(cls_prob, fake_tgt_cls_prob)
+        tgt_cst_cls_loss = smooth_l1(tgt_cls_prob, fake_cls_prob)
+        cst_cls_loss = torch.Tensor([0]).cuda()
         
         base_score, base_label = self.source_D(base_feat, need_backprop)
         base_prob = F.log_softmax(base_score, dim=1)
@@ -334,6 +343,35 @@ class _fasterRCNN(nn.Module):
         fake_tgt_base_score, fake_tgt_base_label = self.target_D(fake_tgt_base_feat, need_backprop)
         fake_tgt_base_prob = F.log_softmax(fake_tgt_base_score, dim=1)
         fake_tgt_img_cls = F.nll_loss(fake_tgt_base_prob, fake_tgt_base_label)
+
+        instance_loss = nn.BCELoss()
+     
+        source_ins_cls = 0
+        fake_source_ins_cls = 0 
+        target_ins_cls = 0
+        fake_tgt_ins_cls = 0
+
+        instance_sigmoid, same_size_label = self.source_instance(
+            pooled_feat, need_backprop
+        )
+        source_ins_cls = instance_loss(instance_sigmoid, same_size_label)
+
+        fake_instance_sigmoid, fake_same_size_label = self.source_instance(
+            fake_pooled_feat, tgt_need_backprop
+        )
+        fake_source_ins_cls = instance_loss(fake_instance_sigmoid, fake_same_size_label)
+
+        tgt_instance_sigmoid, tgt_same_size_label = self.target_instance(
+            tgt_pooled_feat, need_backprop
+        )
+        target_ins_cls = instance_loss(tgt_instance_sigmoid, tgt_same_size_label)
+
+        fake_tgt_instance_sigmoid, fake_tgt_same_size_label = self.target_instance(
+            fake_tgt_pooled_feat, tgt_need_backprop
+        )
+        fake_tgt_ins_cls = instance_loss(fake_tgt_instance_sigmoid, fake_tgt_same_size_label)
+
+
 
         return (
             rois,
@@ -366,7 +404,11 @@ class _fasterRCNN(nn.Module):
             tgt_img_cls, 
             fake_tgt_img_cls, 
             source_norm_loss, 
-            target_norm_loss
+            target_norm_loss, 
+            source_ins_cls, 
+            fake_source_ins_cls, 
+            target_ins_cls, 
+            fake_tgt_ins_cls
         )
 
     def _init_weights(self):
@@ -393,6 +435,20 @@ class _fasterRCNN(nn.Module):
         normal_init(self.tgt_RCNN_rpn.RPN_bbox_pred, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.tgt_RCNN_cls_score, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.tgt_RCNN_bbox_pred, 0, 0.001, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.source_D.Conv1, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.source_D.Conv2, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.target_D.Conv1, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.target_D.Conv2, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.source_instance.dc_ip1, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.source_instance.dc_ip2, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.source_instance.clssifer, 0, 0.05, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.target_instance.dc_ip1, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.target_instance.dc_ip2, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.target_instance.clssifer, 0, 0.05, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.adain.DA.Conv1, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.adain.DA.Conv2, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.adain_chaos.DA.Conv1, 0, 0.01, cfg.TRAIN.TRUNCATED)
+        #normal_init(self.adain_chaos.DA.Conv2, 0, 0.01, cfg.TRAIN.TRUNCATED)
         
 
     def create_architecture(self):

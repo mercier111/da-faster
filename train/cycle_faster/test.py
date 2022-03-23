@@ -480,7 +480,11 @@ if __name__ == "__main__":
             tgt_img_cls, 
             fake_tgt_img_cls, 
             source_norm_loss, 
-            target_norm_loss
+            target_norm_loss, 
+            source_ins_cls, 
+            fake_source_ins_cls, 
+            target_ins_cls, 
+            fake_tgt_ins_cls,
         ) = fasterRCNN(im_data, im_info, gt_boxes, num_boxes, im_data, im_info, gt_boxes, num_boxes, args.chaos)
 
         scores = tgt_cls_prob.data

@@ -205,6 +205,15 @@ def parse_args():
         "--chaos", dest="chaos", help="stat use net", action="store_true"
     )
 
+    parser.add_argument(
+        "--attention", dest="attention", help="stat use attention", action="store_true"
+    )
+
+    parser.add_argument(
+        "--use_instance_da", dest="use_instance_da", help="use instance da or not", action="store_true"
+    )
+
+
     args = parser.parse_args()
     return args
 
@@ -688,7 +697,11 @@ if __name__ == "__main__":
                 tgt_img_cls, 
                 fake_tgt_img_cls, 
                 source_norm_loss, 
-                target_norm_loss
+                target_norm_loss, 
+                source_ins_cls, 
+                fake_source_ins_cls, 
+                target_ins_cls, 
+                fake_tgt_ins_cls
             ) = fasterRCNN(
                 im_data,
                 im_info,
@@ -701,6 +714,7 @@ if __name__ == "__main__":
                 tgt_gt_boxes,
                 tgt_num_boxes,
                 args.chaos,
+                args.attention
                 #tgt_need_backprop,
                 #weight_value=args.instance_weight_value,
             )
@@ -739,8 +753,15 @@ if __name__ == "__main__":
                         + tgt_cst_bbox_loss.mean()
                         + cst_cls_loss.mean()
                         + tgt_cst_cls_loss.mean()
-                        )
-             
+                )
+            
+            if args.use_instance_da :
+                loss += (
+                        + source_ins_cls.mean()
+                        + fake_source_ins_cls.mean()
+                        + target_ins_cls.mean()
+                        + fake_tgt_ins_cls.mean()
+                )
             loss_temp += loss.item()
             
             bayes_loss = 0
@@ -798,6 +819,10 @@ if __name__ == "__main__":
                 cst_cls_loss = (cst_cls_loss.item() + tgt_cst_cls_loss.item())/2
                 source_norm_loss = source_norm_loss.item()
                 target_norm_loss = target_norm_loss.item()
+                source_ins_cls = source_ins_cls.item()
+                fake_source_ins_cls = fake_source_ins_cls.item()
+                target_ins_cls = target_ins_cls.item()
+                fake_tgt_ins_cls = fake_tgt_ins_cls.item()
 
                 #fg_cnt = torch.sum(rois_label.data.ne(0))
                 #bg_cnt = rois_label.data.numel() - fg_cnt
@@ -812,7 +837,7 @@ if __name__ == "__main__":
                     "\t\t\tfg/bg=(%d/%d), time cost: %f" % (fg_cnt, bg_cnt, end - start)
                 )
                 print(
-                    "\t\t\trpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box %.4f,\n\t\t\ttgt_rpn_cls: %.4f,tgt_rpn_box: %.4f, tgt_rcnn_cls: %.4f, tgt_rcnn_box %.4f,\n\t\t\tcst_cls: %.4f, cst_bbox: %.4f, \n\t\t\tsource_skews: %.4f, target_skews: %.4f,\n\t\t\tsource_kurtoses: %.4f, target_kurtoses: %.4f, \n\t\t\tsource_cls: %.4f, fake_source_cls: %.4f, target_cls: %.4f, fake_target_cls: %.4f,\n\t\t\tsource_norm_cls: %.4f,target_norm_cls: %.4f"
+                    "\t\t\trpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box %.4f,\n\t\t\ttgt_rpn_cls: %.4f,tgt_rpn_box: %.4f, tgt_rcnn_cls: %.4f, tgt_rcnn_box %.4f,\n\t\t\tcst_cls: %.4f, cst_bbox: %.4f, \n\t\t\tsource_skews: %.4f, target_skews: %.4f,\n\t\t\tsource_kurtoses: %.4f, target_kurtoses: %.4f, \n\t\t\tsource_cls: %.4f, fake_source_cls: %.4f, target_cls: %.4f, fake_target_cls: %.4f,\n\t\t\tsource_norm_cls: %.4f,target_norm_cls: %.4f\n\t\t\tsource_ins_cls: %.4f,fake_source_ins_cls: %.4f,target_ins_cls: %.4f,fake_target_ins_cls: %.4f"
                     % (
                         loss_rpn_cls,
                         loss_rpn_box,
@@ -833,7 +858,11 @@ if __name__ == "__main__":
                         tgt_img_cls, 
                         fake_tgt_img_cls, 
                         source_norm_loss, 
-                        target_norm_loss
+                        target_norm_loss, 
+                        source_ins_cls, 
+                        fake_source_ins_cls, 
+                        target_ins_cls, 
+                        fake_tgt_ins_cls, 
                     )
                 )
 

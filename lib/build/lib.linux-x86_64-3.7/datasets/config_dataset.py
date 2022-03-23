@@ -19,6 +19,8 @@ __D.PASCALWATER = "/datasets/VOCdevkit"
 # For these datasets, the directories under the path will be Annotations  ImageSets  JPEGImages."
 __D.CLIPART = "datasets/clipart"
 __D.WATER = "/datasets/DA_new/watercolor"
+__D.SSDD = "datasets/SSDD" 
+__D.LEVIR = "datasets/LEVIR"
 
 
 def _merge_a_into_b(a, b):

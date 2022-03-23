@@ -19,6 +19,8 @@ from datasets.pascal_voc_water import pascal_voc_water
 from datasets.sim10k_coco import sim10k
 from datasets.vg import vg
 from datasets.water import water
+from datasets.SSDD import SSDD
+from datasets.LEVIR import LEVIR
 
 __sets = {}
 
@@ -78,6 +80,15 @@ for year in ["2019"]:
         name = "cityscapes_car_{}_{}".format(year, split)
         __sets[name] = lambda split=split, year=year: cityscapes_car(split, year)
 
+for year in ["2007"]:
+    for split in ["trainval", "train", "test"]:
+        name = "SSDD_{}".format(split)
+        __sets[name] = lambda split=split: SSDD(split, year)
+
+for year in ["2007"]:
+    for split in ["trainval", "train", "test"]:
+        name = "LEVIR_{}".format(split)
+        __sets[name] = lambda split=split: LEVIR(split, year)
 
 # Set up vg_<split>
 # for version in ['1600-400-20']:

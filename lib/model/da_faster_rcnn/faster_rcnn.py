@@ -77,6 +77,7 @@ class _fasterRCNN(nn.Module):
         gt_boxes = gt_boxes.data
         num_boxes = num_boxes.data
         need_backprop = need_backprop.data
+        
 
         # feed image data to base model to obtain base feature map
         base_feat = self.RCNN_base(im_data)

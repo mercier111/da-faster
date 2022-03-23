@@ -9,9 +9,9 @@
 #SBATCH --mail-type=all
 #SBATCH --mail-user=827174975@qq.com 
 
-save_dir="experiments/DA_Faster/LEVIR/model"
+save_dir="experiments/DA_Faster2/LEVIR/model"
 dataset="LEVIR"
 net="res101"
 
 python -u  da_train_net.py --cuda --dataset ${dataset} --net ${net} --save_dir ${save_dir} \
-                           --max_epochs 20  --lr_decay_step 10 --lr 0.001 --max_iter 2000
+                           --max_epochs 12  --lr_decay_step 8 --lr 0.001 --max_iter 1500

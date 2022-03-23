@@ -37,6 +37,7 @@ def prep_im_for_blob(im, pixel_means, target_size, max_size):
 
     im = im.astype(np.float32, copy=False)
     im -= pixel_means
+
     # im = im[:, :, ::-1]
     im_shape = im.shape
     im_size_min = np.min(im_shape[0:2])
